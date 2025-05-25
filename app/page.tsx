@@ -1,8 +1,7 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Minimize2, X } from "lucide-react"
+import React, { useState, useEffect } from "react"
+import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Minimize2, X, Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -22,6 +21,30 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
+
+function DarkModeToggle() {
+  useEffect(() => {
+    // Set initial mode based on system preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark')
+    }
+  }, [])
+
+  const toggleDarkMode = () => {
+    document.documentElement.classList.toggle('dark')
+  }
+
+  return (
+    <button
+      onClick={toggleDarkMode}
+      className="absolute top-4 right-4 p-2 rounded-full bg-white/80 dark:bg-neutral-800/80 shadow"
+      aria-label="Toggle dark mode"
+    >
+      <Sun className="w-5 h-5 text-yellow-500 dark:hidden" />
+      <Moon className="w-5 h-5 text-blue-400 hidden dark:inline" />
+    </button>
+  )
+}
 
 export default function FileConverter() {
   const { toast } = useToast()
@@ -122,6 +145,7 @@ export default function FileConverter() {
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }
+    trackEvent("file_selected", { file_type: file.type })
   }
 
   const handleDrop = (e: React.DragEvent) => {
@@ -200,6 +224,14 @@ export default function FileConverter() {
             action: <ToastAction altText="Download">Download</ToastAction>,
           })
         }
+
+        // Example for a download conversion
+        // gtag('event', 'conversion', {
+        //   'send_to': 'AW-CONVERSION_ID/label',
+        //   'event_category': 'engagement',
+        //   'event_label': 'image_download'
+        // });
+        trackEvent("conversion", { from: detectedFormat, to: toFormat })
       } else {
         // Show error message
         toast({
@@ -228,6 +260,13 @@ export default function FileConverter() {
     link.href = "#"
     link.download = convertedFile || "converted-file"
     link.click()
+
+    // Example for a download conversion
+    // gtag('event', 'conversion', {
+    //   'send_to': 'AW-CONVERSION_ID/label',
+    //   'event_category': 'engagement',
+    //   'event_label': 'image_download'
+    // });
   }
 
   const canConvert = selectedFile && detectedFormat && toFormat && detectedFormat !== toFormat
@@ -288,11 +327,26 @@ export default function FileConverter() {
     }
   }, [imageOptions, selectedFile, detectedFormat, toFormat])
 
+  // --- Google Analytics event helper ---
+  const trackEvent = (action: string, params: Record<string, any> = {}) => {
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", action, params)
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-200 dark:from-neutral-950 dark:to-neutral-900 p-4">
+      <DarkModeToggle />
+      {/* --- Logo Placeholder --- */}
+      <div className="w-full flex items-center pl-2 mt-4 mb-4">
+        <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold shadow">
+          IC
+        </div>
+      </div>
+
       {/* --- Top Banner Ad Placeholder --- */}
       <div className="w-full flex justify-center mb-4">
-        <div className="bg-gray-200 rounded-lg w-full max-w-4xl h-16 flex items-center justify-center text-gray-500 font-semibold">
+        <div className="bg-gray-200 dark:bg-neutral-800 rounded-lg w-full max-w-4xl h-16 flex items-center justify-center text-gray-500 dark:text-neutral-200 font-semibold">
           [Ad Banner Placeholder]
         </div>
       </div>
@@ -300,8 +354,8 @@ export default function FileConverter() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 pt-8"> 
-          <h1 className="text-4xl font-bold text-slate-800 mb-3">Image Converter Pro</h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-slate-800 dark:text-white mb-3">PNG Convert</h1>
+          <p className="text-lg text-slate-600 dark:text-neutral-300 max-w-2xl mx-auto">
             Convert and optimize your images with advanced features. Support for PNG, JPG, WebP, and AVIF formats.
           </p>
         </div>
@@ -309,19 +363,19 @@ export default function FileConverter() {
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Main Converter */}
           <div className="lg:col-span-3">
-            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/90 dark:bg-neutral-900/95 backdrop-blur-sm">
               <CardHeader className="pb-6">
-                <CardTitle className="text-2xl text-center text-slate-800">Convert Your Images</CardTitle>
+                <CardTitle className="text-2xl text-center text-slate-800 dark:text-white">Convert Your Images</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* File Upload Area */}
                 <div
                   className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${
                     isDragOver
-                      ? "border-blue-400 bg-blue-50"
+                      ? "border-blue-400 bg-blue-50 dark:bg-neutral-800"
                       : selectedFile
-                        ? "border-green-400 bg-green-50"
-                        : "border-slate-300 hover:border-blue-400 hover:bg-slate-50"
+                        ? "border-green-400 bg-green-50 dark:bg-neutral-800"
+                        : "border-slate-300 dark:border-neutral-700 hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-neutral-800"
                   }`}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
@@ -353,7 +407,7 @@ export default function FileConverter() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="absolute top-2 right-2 bg-white/80 hover:bg-white text-slate-700"
+                              className="absolute top-2 right-2 bg-white/80 dark:bg-neutral-800/80 hover:bg-white dark:hover:bg-neutral-700 text-slate-700 dark:text-white"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 setShowPreview(true)
@@ -365,10 +419,10 @@ export default function FileConverter() {
                         </div>
                       )}
                       <div>
-                        <p className="font-semibold text-slate-800">{selectedFile.name}</p>
-                        <p className="text-sm text-slate-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p className="font-semibold text-slate-800 dark:text-white">{selectedFile.name}</p>
+                        <p className="text-sm text-slate-500 dark:text-neutral-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                         {detectedFormat && (
-                          <Badge variant="secondary" className="mt-2 bg-blue-100 text-blue-700">
+                          <Badge variant="secondary" className="mt-2 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
                             {detectedFormat.toUpperCase()}
                           </Badge>
                         )}
@@ -377,7 +431,7 @@ export default function FileConverter() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-slate-500 hover:text-slate-700"
+                              className="text-slate-500 dark:text-neutral-300 hover:text-slate-700 dark:hover:text-white"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 setShowMetadata(!showMetadata)
@@ -387,23 +441,23 @@ export default function FileConverter() {
                               {showMetadata ? 'Hide Details' : 'Show Details'}
                             </Button>
                             {showMetadata && (
-                              <div className="text-sm text-slate-600">
+                              <div className="text-sm text-slate-600 dark:text-neutral-300">
                                 {imageMetadata.width} × {imageMetadata.height}px
                               </div>
                             )}
                           </div>
                         )}
                       </div>
-                      <Badge variant="secondary" className="bg-green-100 text-green-700">
+                      <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200">
                         Image Selected
                       </Badge>
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <Upload className="w-12 h-12 text-slate-400 mx-auto" />
+                      <Upload className="w-12 h-12 text-slate-400 dark:text-neutral-400 mx-auto" />
                       <div>
-                        <p className="text-lg font-semibold text-slate-700">Drop your image here or click to browse</p>
-                        <p className="text-sm text-slate-500">Supports PNG, JPG, WebP, and AVIF formats</p>
+                        <p className="text-lg font-semibold text-slate-700 dark:text-white">Drop your image here or click to browse</p>
+                        <p className="text-sm text-slate-500 dark:text-neutral-400">Supports PNG, JPG, WebP, and AVIF formats</p>
                       </div>
                     </div>
                   )}
@@ -411,7 +465,7 @@ export default function FileConverter() {
 
                 {/* Preview Dialog */}
                 <Dialog open={showPreview} onOpenChange={setShowPreview}>
-                  <DialogContent className="max-w-3xl">
+                  <DialogContent className="max-w-3xl dark:bg-neutral-900 dark:text-white">
                     <DialogHeader>
                       <div className="flex items-center justify-between w-full">
                         <DialogTitle className="font-bold text-lg">Image Preview</DialogTitle>
@@ -419,6 +473,7 @@ export default function FileConverter() {
                           <Button
                             variant="ghost"
                             size="sm"
+                            className="dark:bg-neutral-800/80 dark:text-white"
                             onClick={() => {
                               const link = document.createElement("a")
                               link.href = previewUrl || ""
@@ -429,19 +484,10 @@ export default function FileConverter() {
                             <Download className="w-4 h-4 mr-2" />
                             Download
                           </Button>
-                          {/* <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setShowPreview(false)}
-                          >
-                            <X className="w-4 h-4" />
-                          </Button> */}
                         </div>
                       </div>
-                      <DialogDescription>
+                      <DialogDescription className="dark:text-neutral-300">
                         {imageMetadata?.width} × {imageMetadata?.height}px • {((selectedFile?.size || 0) / 1024 / 1024).toFixed(2)} MB
-                     
-                     
                       </DialogDescription>
                     </DialogHeader>
                     <div className="relative mt-4 max-h-[60vh] overflow-auto">
@@ -457,16 +503,16 @@ export default function FileConverter() {
 
                 {/* Format Selection */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">Convert to</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-neutral-200">Convert to</label>
                   <Select value={toFormat} onValueChange={setToFormat}>
-                    <SelectTrigger className="h-12 bg-white border-slate-200">
+                    <SelectTrigger className="h-12 bg-white border-slate-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white">
                       <SelectValue placeholder="Select target format" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="dark:bg-neutral-900 dark:text-white">
                       {fileFormats
                         .filter((format: FileFormat) => format.value !== detectedFormat)
                         .map((format: FileFormat) => (
-                          <SelectItem key={format.value} value={format.value}>
+                          <SelectItem key={format.value} value={format.value} className="dark:text-white">
                             <div className="flex items-center gap-2">
                               <span>{format.icon}</span>
                               <span>{format.label}</span>
@@ -481,7 +527,7 @@ export default function FileConverter() {
                 <div className="flex items-center justify-between">
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 dark:text-white"
                     onClick={() => setShowAdvanced(!showAdvanced)}
                   >
                     <Settings className="w-4 h-4" />
@@ -491,7 +537,7 @@ export default function FileConverter() {
 
                 {/* Advanced Options */}
                 {showAdvanced && (
-                  <div className="space-y-6 p-4 bg-slate-50 rounded-lg">
+                  <div className="space-y-6 p-4 bg-slate-50 dark:bg-neutral-800 rounded-lg">
                     <div className="grid md:grid-cols-2 gap-4">
                       {/* Quality Slider */}
                       <div className="space-y-2">
@@ -685,7 +731,7 @@ export default function FileConverter() {
                 <Button
                   onClick={handleConvert}
                   disabled={!canConvert || isConverting}
-                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 dark:from-teal-700 dark:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 dark:text-white"
                 >
                   {isConverting ? (
                     <>
@@ -702,19 +748,19 @@ export default function FileConverter() {
 
                 {/* Conversion Result */}
                 {convertedFile && (
-                  <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+                  <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:from-green-900 dark:to-emerald-900 dark:border-green-700">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                            <Download className="w-5 h-5 text-green-600" />
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center dark:bg-green-900">
+                            <Download className="w-5 h-5 text-green-600 dark:text-green-300" />
                           </div>
                           <div>
-                            <p className="font-semibold text-green-800">Conversion Complete!</p>
-                            <p className="text-sm text-green-600">{convertedFile}</p>
+                            <p className="font-semibold text-green-800 dark:text-green-200">Conversion Complete!</p>
+                            <p className="text-sm text-green-600 dark:text-green-300">{convertedFile}</p>
                           </div>
                         </div>
-                        <Button onClick={handleDownload} className="bg-green-600 hover:bg-green-700">
+                        <Button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 dark:text-white">
                           <Download className="w-4 h-4 mr-2" />
                           Download
                         </Button>
@@ -729,45 +775,51 @@ export default function FileConverter() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Features Card */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-lg text-slate-800">Features</CardTitle>
+                <CardTitle className="text-lg text-slate-800 dark:text-white">Features</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center dark:bg-blue-900">
+                    <Zap className="w-4 h-4 text-blue-600 dark:text-blue-300" />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-700">Fast Conversion</p>
-                    <p className="text-sm text-slate-500">Convert images in seconds</p>
+                    <p className="font-medium text-slate-700 dark:text-white">Fast Conversion</p>
+                    <p className="text-sm text-slate-500 dark:text-neutral-300">Convert images in seconds</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <Shield className="w-4 h-4 text-green-600" />
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center dark:bg-green-900">
+                    <Shield className="w-4 h-4 text-green-600 dark:text-green-300" />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-700">Secure Processing</p>
-                    <p className="text-sm text-slate-500">Your images are safe with us</p>
+                    <p className="font-medium text-slate-700 dark:text-white">Secure Processing</p>
+                    <p className="text-sm text-slate-500 dark:text-neutral-300">Your images are safe with us</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <Layers className="w-4 h-4 text-purple-600" />
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center dark:bg-purple-900">
+                    <Layers className="w-4 h-4 text-purple-600 dark:text-purple-300" />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-700">Advanced Features</p>
-                    <p className="text-sm text-slate-500">Resize, rotate, and optimize</p>
+                    <p className="font-medium text-slate-700 dark:text-white">Advanced Features</p>
+                    <p className="text-sm text-slate-500 dark:text-neutral-300">Resize, rotate, and optimize</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
+            {/* Sidebar Ad */}
+            <div className="w-full flex justify-center mb-8">
+              <div className="bg-gray-200 dark:bg-neutral-800 rounded-lg w-full max-w-2xl h-20 flex items-center justify-center text-gray-500 dark:text-neutral-200 font-semibold">
+                [Ad Sidebar/Inline Placeholder]
+              </div>
+            </div>
 
             {/* Supported Formats */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-0 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-lg text-slate-800">Supported Formats</CardTitle>
+                <CardTitle className="text-lg text-slate-800 dark:text-white">Supported Formats</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-2">
@@ -775,7 +827,7 @@ export default function FileConverter() {
                     <Badge
                       key={format.value}
                       variant="secondary"
-                      className="justify-center py-2 bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      className="justify-center py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
                     >
                       {format.icon}
                       <span className="ml-1">{format.label}</span>
@@ -788,8 +840,18 @@ export default function FileConverter() {
         </div>
 
         {/* Footer */}
-        <footer className="text-center mt-12 pb-8">
-          <p className="text-slate-500">© 2024 Image Converter Pro. Convert images with confidence.</p>
+    
+
+             {/* Footer */}
+             <footer className="text-center mt-12 pb-8 text-slate-500 dark:text-neutral-400">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-4 text-sm">
+            <a href="/privacy-policy" className="hover:underline">Privacy Policy</a>
+            <a href="/terms-of-service" className="hover:underline">Terms of Service</a>
+            <a href="/contact" className="hover:underline">Contact Us</a>
+            <a href="/about" className="hover:underline">About</a>
+            <a href="/faq" className="hover:underline">FAQ</a>
+          </div>
+          © {new Date().getFullYear()} PNG Convert. Convert images with confidence.
         </footer>
       </div>
     </div>
