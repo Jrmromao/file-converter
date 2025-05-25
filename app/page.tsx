@@ -358,7 +358,7 @@ export default function FileConverter() {
             style={{ 
               display: "block", 
               width: "100%", 
-              maxWidth: "728px", 
+              maxWidth: "90px", 
               minHeight: 90,
               borderRadius: "0.75rem",
               overflow: "hidden"
@@ -805,7 +805,6 @@ export default function FileConverter() {
 
                 {/* --- In-Content Ad Slot (Responsive, Recommended size: 336x280 or 300x250) --- */}
                 {/* This ad unit will appear below the conversion result or the main converter card */}
-                <div className="w-full flex justify-center mt-8">
                 <GoogleAd
             adClient="ca-pub-1009479093659621"
             adSlot="8774727539"
@@ -814,12 +813,13 @@ export default function FileConverter() {
               width: "100%", 
               maxWidth: "336px", 
               minHeight: 280,
+              maxHeight: 280,
               borderRadius: "0.75rem",
               overflow: "hidden"
             }}
             className="rounded-xl"
           />
-                </div>
+          
 
               </CardContent>
             </Card>
@@ -872,8 +872,8 @@ export default function FileConverter() {
             style={{ 
               display: "block", 
               width: "100%", 
-              maxWidth: "300px", 
-              minHeight: 250,
+              maxWidth: "600px", 
+              minHeight: 300,
               borderRadius: "0.75rem",
               overflow: "hidden"
             }}
