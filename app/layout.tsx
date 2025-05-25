@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { Image, FileImage, Palette, Film } from "lucide-react"
 import type { ReactNode } from 'react'
+import AdSense from './components/AdSense'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -50,6 +51,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <AdSense pId="ca-pub-1009479093659621" />
+      </head>
       <body className={inter.className}>
         {children}
         <GoogleAnalytics gaId="G-313BF1QH73" />
