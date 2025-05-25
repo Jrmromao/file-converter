@@ -10,9 +10,57 @@ import AdSense from './components/AdSense'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PNG Convert',
-  description: 'Convert and optimize your images with advanced features',
-  generator: 'PNG Convert',
+  title: 'PNG Convert - Free Online Image Converter | PNG, JPG, WebP, AVIF',
+  description: 'Convert and optimize your images online for free. Support for PNG, JPG, WebP, and AVIF formats. Fast, secure, and easy to use image converter with advanced features.',
+  keywords: 'image converter, png converter, jpg converter, webp converter, avif converter, image optimization, free image converter, online image converter',
+  authors: [{ name: 'PNG Convert' }],
+  creator: 'PNG Convert',
+  publisher: 'PNG Convert',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://pngconvert.app'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'PNG Convert - Free Online Image Converter',
+    description: 'Convert and optimize your images online for free. Support for PNG, JPG, WebP, and AVIF formats.',
+    url: 'https://pngconvert.app',
+    siteName: 'PNG Convert',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'PNG Convert - Free Online Image Converter',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PNG Convert - Free Online Image Converter',
+    description: 'Convert and optimize your images online for free. Support for PNG, JPG, WebP, and AVIF formats.',
+    images: ['/twitter-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'googlef61644379538afda',
+  },
 }
 
 export type FileFormat = {
@@ -52,6 +100,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="google-site-verification" content="YOUR-GOOGLE-VERIFICATION-CODE" />
         <AdSense pId="ca-pub-1009479093659621" />
       </head>
       <body className={inter.className}>
