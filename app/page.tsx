@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Moon, Sun, Instagram, Share2, Wand2, FileStack, Gauge, Palette, Camera, X, Cookie, Facebook, Twitter, Linkedin } from "lucide-react"
+import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Moon, Sun, Instagram, Share2, Wand2, FileStack, Gauge, Palette, Camera, X, Cookie, Facebook, Twitter, Linkedin, Github, Globe, Printer, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -205,6 +205,7 @@ export default function FileConverter() {
   const [processingProgress, setProcessingProgress] = useState(0)
   const [showCookieConsent, setShowCookieConsent] = useState(false)
   const [cookieConsent, setCookieConsent] = useState<'accepted' | 'denied' | null>(null)
+  const [mode, setMode] = useState<'convert' | 'optimize'>('convert')
 
   useEffect(() => {
     return () => {
@@ -318,7 +319,7 @@ export default function FileConverter() {
     }
   }
 
-  const handleConvert = async () => {
+  const handleConvert = async (optimize: boolean = false) => {
     if (!selectedFile || !detectedFormat || !toFormat) return
 
     setIsConverting(true)
@@ -522,39 +523,104 @@ export default function FileConverter() {
         <meta name="keywords" content="image converter, image optimizer, social media image optimizer, Instagram image converter, Facebook image optimizer, Twitter image resizer, LinkedIn image converter, Pinterest image optimizer, WebP converter, AVIF converter, image compression, image resizing, photo editor" />
       </Head>
 
-      <DarkModeToggle />
-      
-      {/* Header */}
-      <header className="max-w-7xl mx-auto px-4 py-16">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-lg">
+                  PNG
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Image Converter
+                </span>
+              </div>
+              <div className="hidden md:flex items-center gap-6">
+                <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Features
+                </a>
+                <a href="#how-it-works" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  How It Works
+                </a>
+                <a href="#faq" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  FAQ
+                </a>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" className="hidden md:flex">
+                <Github className="w-4 h-4 mr-2" />
+                GitHub
+              </Button>
+              <DarkModeToggle />
+            </div>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-16">
           <div className="flex flex-col items-center md:items-start">
-            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl shadow-2xl mb-3">
+            <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-3xl shadow-2xl mb-4">
               PNG
             </div>
           </div>
           <div className="text-center md:text-left flex-1">
-            <span className="inline-block bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-full text-xs mb-3">
-              Social Media Ready
-            </span>
-            <span className="uppercase tracking-widest text-sm text-green-600 font-semibold mb-3 block">
-              Free Online Tool
-            </span>
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
-              Convert, <span className="text-blue-600 bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">Optimize</span> & Resize Images
+            <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-4">
+              <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <Zap className="w-3 h-3 mr-1" />
+                Fast & Free
+              </Badge>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                <Shield className="w-3 h-3 mr-1" />
+                Secure
+              </Badge>
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                <Sparkles className="w-3 h-3 mr-1" />
+                AI-Powered
+              </Badge>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+              Convert & Optimize Images for{' '}
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Social Media
+              </span>
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl">
-              Transform your images for <span className="font-semibold text-blue-600">Instagram</span>, <span className="font-semibold text-blue-700">Facebook</span>, <span className="font-semibold text-sky-400">Twitter</span>, <span className="font-semibold text-blue-800">LinkedIn</span>, <span className="font-semibold text-red-500">Pinterest</span>, and more. Perfect for social media posts, stories, and profiles.
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mb-8">
+              Transform your images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest. Perfect for social media posts, stories, and profiles.
             </p>
-            <div className="flex justify-center md:justify-start gap-3 mt-4">
-              <Instagram className="w-6 h-6 text-pink-500" />
-              <Facebook className="w-6 h-6 text-blue-700" /> {/* Facebook */}
-              <Twitter className="w-6 h-6 text-sky-400" /> {/* Twitter */}
-              <Linkedin className="w-6 h-6 text-blue-800" /> {/* LinkedIn */}
-              <Share2 className="w-6 h-6 text-red-500" /> {/* Pinterest */}
+            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8">
+                <Upload className="w-5 h-5 mr-2" />
+                Upload Image
+              </Button>
+              <Button size="lg" variant="outline" className="border-2">
+                <FileStack className="w-5 h-5 mr-2" />
+                Batch Process
+              </Button>
+            </div>
+            <div className="flex justify-center md:justify-start gap-4 mt-8">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Instagram className="w-5 h-5 text-pink-500" />
+                <span className="text-sm">Instagram</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Facebook className="w-5 h-5 text-blue-600" />
+                <span className="text-sm">Facebook</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Twitter className="w-5 h-5 text-sky-400" />
+                <span className="text-sm">Twitter</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Linkedin className="w-5 h-5 text-blue-700" />
+                <span className="text-sm">LinkedIn</span>
+              </div>
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 pb-16">
@@ -562,16 +628,78 @@ export default function FileConverter() {
           {/* Converter Section */}
           <div className="lg:col-span-2">
             <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold">Image Converter</CardTitle>
+              <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-2xl font-semibold">Image Converter</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                      onClick={() => setShowAdvanced(!showAdvanced)}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      {showAdvanced ? 'Hide Options' : 'Show Options'}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                      onClick={() => setShowPreview(!showPreview)}
+                    >
+                      <Maximize2 className="w-4 h-4 mr-2" />
+                      Preview
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                {/* File Upload */}
+              <CardContent className="space-y-6 pt-6">
+                {/* Mode Selection */}
+                <div className="flex flex-col items-center mb-6">
+                  <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-700 p-1 mb-2">
+                    <button
+                      className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                        mode === 'convert'
+                          ? 'bg-blue-600 text-white shadow-lg scale-105'
+                          : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                      onClick={() => setMode('convert')}
+                      type="button"
+                      aria-pressed={mode === 'convert'}
+                    >
+                      <FileText className="w-4 h-4 mr-2 inline" />
+                      Convert
+                    </button>
+                    <button
+                      className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                        mode === 'optimize'
+                          ? 'bg-blue-600 text-white shadow-lg scale-105'
+                          : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                      onClick={() => setMode('optimize')}
+                      type="button"
+                      aria-pressed={mode === 'optimize'}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2 inline" />
+                      Optimize
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md">
+                    {mode === 'convert'
+                      ? 'Convert your image to a new format and optimize it for web or social media.'
+                      : 'Optimize your image for web or social media without changing its format.'}
+                  </p>
+                </div>
+
+                {/* File Upload Area */}
                 <div
-                  className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
-                    ${isDragOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 
-                      selectedFile ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : 
-                      'border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+                  className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
+                    ${isDragOver 
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 scale-[1.02]' 
+                      : selectedFile 
+                        ? 'border-green-500 bg-green-50 dark:bg-green-900/30' 
+                        : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -587,30 +715,37 @@ export default function FileConverter() {
                   {selectedFile ? (
                     <div className="space-y-4">
                       {previewUrl && (
-                        <div className="relative max-h-64 overflow-hidden rounded-lg">
+                        <div className="relative max-h-64 overflow-hidden rounded-lg group">
                           <img
                             src={previewUrl}
                             alt="Preview"
-                            className="object-contain max-h-60 w-full rounded-lg"
+                            className="object-contain max-h-60 w-full rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
                           />
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute top-2 right-2 bg-white/80 dark:bg-gray-800/80 rounded-full"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setShowPreview(true)
-                            }}
-                          >
-                            <Maximize2 className="w-4 h-4" />
-                          </Button>
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setShowPreview(true)
+                              }}
+                            >
+                              <Maximize2 className="w-4 h-4 mr-2" />
+                              View Full Size
+                            </Button>
+                          </div>
                         </div>
                       )}
                       <div>
                         <p className="font-medium text-lg truncate">{selectedFile.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
                         {detectedFormat && (
-                          <Badge className="mt-2 bg-blue-600 dark:bg-blue-700">{detectedFormat.toUpperCase()}</Badge>
+                          <Badge className="mt-2 bg-blue-600 dark:bg-blue-700">
+                            {detectedFormat.toUpperCase()}
+                          </Badge>
                         )}
                         {imageMetadata && (
                           <div className="mt-2 flex justify-center gap-2">
@@ -635,278 +770,141 @@ export default function FileConverter() {
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      <Upload className="w-12 h-12 text-blue-500 dark:text-blue-400 mx-auto" />
-                      <p className="text-lg font-medium">Drop or click to upload image</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">PNG, JPG, WebP, AVIF supported</p>
+                    <div className="space-y-4">
+                      <div className="w-16 h-16 mx-auto bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-blue-500 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-lg font-medium">Drop your image here</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          or click to browse files
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">
+                        Supports PNG, JPG, WebP, AVIF
+                      </p>
                     </div>
                   )}
                 </div>
 
-                {/* Preview Dialog */}
-                <Dialog open={showPreview} onOpenChange={setShowPreview}>
-                  <DialogContent className="max-w-4xl bg-white dark:bg-gray-800">
-                    <DialogHeader>
-                      <div className="flex justify-between items-center">
-                        <DialogTitle>Image Preview</DialogTitle>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const link = document.createElement("a")
-                            link.href = previewUrl || ""
-                            link.download = selectedFile?.name || "image"
-                            link.click()
-                          }}
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
-                        </Button>
-                      </div>
-                      <DialogDescription>
-                        {imageMetadata?.width} × {imageMetadata?.height}px • {((selectedFile?.size || 0) / 1024 / 1024).toFixed(2)} MB
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="mt-4 max-h-[70vh] overflow-auto">
-                      <img
-                        src={previewUrl || ""}
-                        alt="Preview"
-                        className="max-w-full max-h-[65vh] object-contain rounded-lg"
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
                 {/* Format Selection */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Convert to</Label>
-                  <Select value={toFormat} onValueChange={setToFormat}>
-                    <SelectTrigger className="h-12 bg-white dark:bg-gray-700">
-                      <SelectValue placeholder="Select format" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white dark:bg-gray-700">
-                      {fileFormats
-                        .filter((format: FileFormat) => format.value !== detectedFormat)
-                        .map((format: FileFormat) => (
-                          <SelectItem key={format.value} value={format.value}>
-                            {format.label}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {mode === 'convert' && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Convert to</Label>
+                    <Select value={toFormat} onValueChange={setToFormat}>
+                      <SelectTrigger className="h-12 bg-white dark:bg-gray-700">
+                        <SelectValue placeholder="Select format" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-700">
+                        {fileFormats
+                          .filter((format: FileFormat) => format.value !== detectedFormat)
+                          .map((format: FileFormat) => (
+                            <SelectItem key={format.value} value={format.value}>
+                              <div className="flex items-center gap-2">
+                                <span className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold">
+                                  {format.value.toUpperCase()}
+                                </span>
+                                {format.label}
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
-                {/* Advanced Options */}
+                {/* Convert Button */}
                 <Button
-                  variant="ghost"
-                  className="flex items-center gap-2 text-blue-600 dark:text-blue-400"
-                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  onClick={() => mode === 'convert' ? handleConvert() : handleConvert(true)}
+                  disabled={(!canConvert && mode === 'convert') || isConverting}
+                  className={`w-full h-12 transition-all duration-200 ${
+                    isConverting
+                      ? 'bg-blue-600/80'
+                      : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  <Settings className="w-4 h-4" />
-                  {showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}
+                  {isConverting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      {mode === 'convert' ? 'Converting...' : 'Optimizing...'}
+                    </>
+                  ) : (
+                    <>
+                      {mode === 'convert' ? (
+                        <>
+                          <FileText className="w-5 h-5 mr-2" />
+                          Convert Image
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2" />
+                          Optimize Image
+                        </>
+                      )}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </>
+                  )}
                 </Button>
+
+                {/* Conversion Result */}
+                {convertedFile && (
+                  <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between animate-in slide-in-from-bottom-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
+                        <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Conversion Complete!</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={handleDownload} 
+                      className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                )}
 
                 {showAdvanced && (
                   <div className="space-y-8 p-6 bg-white dark:bg-gray-800 rounded-2xl border border-blue-100 dark:border-blue-900 shadow-md">
-                    {/* Quality and Rotation */}
-                    <div className="grid sm:grid-cols-2 gap-8">
-                      <div>
-                        <Label className="text-sm font-semibold mb-2 block">Quality: <span className="text-blue-600">{imageOptions.quality}%</span></Label>
-                        <Slider
-                          value={[imageOptions.quality]}
-                          onValueChange={(value) => setImageOptions({ ...imageOptions, quality: value[0] })}
-                          min={1}
-                          max={100}
-                          step={1}
-                          className="accent-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-sm font-semibold mb-2 block">Rotation: <span className="text-blue-600">{imageOptions.rotate}°</span></Label>
-                        <Slider
-                          value={[imageOptions.rotate]}
-                          onValueChange={(value) => setImageOptions({ ...imageOptions, rotate: value[0] })}
-                          min={0}
-                          max={360}
-                          step={90}
-                          className="accent-blue-500"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Dimensions */}
+                    {/* Quick Presets */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-bold flex items-center gap-2 mb-2"><Maximize2 className="w-5 h-5 text-blue-500" />Dimensions</h3>
-                      <div className="grid sm:grid-cols-2 gap-6">
-                        <div>
-                          <Label className="text-sm">Width (px)</Label>
-                          <input
-                            type="number"
-                            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
-                            value={imageOptions.width || ''}
-                            onChange={(e) => {
-                              setInstagramPreset('custom')
-                              setImageOptions({ ...imageOptions, width: e.target.value ? parseInt(e.target.value) : undefined })
-                            }}
-                            placeholder="Original width"
-                            min={1}
-                            max={8000}
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm">Height (px)</Label>
-                          <input
-                            type="number"
-                            className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
-                            value={imageOptions.height || ''}
-                            onChange={(e) => {
-                              setInstagramPreset('custom')
-                              setImageOptions({ ...imageOptions, height: e.target.value ? parseInt(e.target.value) : undefined })
-                            }}
-                            placeholder="Original height"
-                            min={1}
-                            max={8000}
-                          />
-                        </div>
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-bold flex items-center gap-2">
+                          <Wand2 className="w-5 h-5 text-purple-500" />
+                          Quick Presets
+                        </h3>
+                        <Select value={selectedOptimization} onValueChange={handleOptimizationPreset}>
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="Select preset" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="custom">Custom</SelectItem>
+                            {Object.entries(OPTIMIZATION_PRESETS).map(([key, preset]) => (
+                              <SelectItem key={key} value={key}>
+                                <div className="flex items-center gap-2">
+                                  {key === 'web' ? <Globe className="w-4 h-4" /> :
+                                   key === 'print' ? <Printer className="w-4 h-4" /> :
+                                   key === 'mobile' ? <Smartphone className="w-4 h-4" /> :
+                                   key === 'ai_enhance' ? <Sparkles className="w-4 h-4" /> :
+                                   <Settings className="w-4 h-4" />}
+                                  {preset.name}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </div>
-
-                    {/* Color Adjustments */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-bold flex items-center gap-2 mb-2"><Palette className="w-5 h-5 text-purple-500" />Color Adjustments</h3>
-                      <div className="grid sm:grid-cols-3 gap-6">
-                        <div>
-                          <Label className="text-sm">Brightness: <span className="text-purple-600">{imageOptions.brightness}%</span></Label>
-                          <Slider
-                            value={[imageOptions.brightness]}
-                            onValueChange={(value) => setImageOptions({ ...imageOptions, brightness: value[0] })}
-                            min={-100}
-                            max={100}
-                            step={1}
-                            className="accent-purple-500"
-                          />
+                      {selectedOptimization !== 'custom' && (
+                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                          <p className="text-sm text-purple-700 dark:text-purple-300">
+                            {OPTIMIZATION_PRESETS[selectedOptimization].description}
+                          </p>
                         </div>
-                        <div>
-                          <Label className="text-sm">Contrast: <span className="text-purple-600">{imageOptions.contrast}%</span></Label>
-                          <Slider
-                            value={[imageOptions.contrast]}
-                            onValueChange={(value) => setImageOptions({ ...imageOptions, contrast: value[0] })}
-                            min={-100}
-                            max={100}
-                            step={1}
-                            className="accent-purple-500"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm">Saturation: <span className="text-purple-600">{imageOptions.saturation}%</span></Label>
-                          <Slider
-                            value={[imageOptions.saturation]}
-                            onValueChange={(value) => setImageOptions({ ...imageOptions, saturation: value[0] })}
-                            min={-100}
-                            max={100}
-                            step={1}
-                            className="accent-purple-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Filters */}
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-bold flex items-center gap-2 mb-2"><Sparkles className="w-5 h-5 text-yellow-500" />Filters</h3>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                        {Object.entries(FILTERS).map(([key]) => (
-                          <Button
-                            key={key}
-                            variant={imageOptions.filter === key ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setImageOptions({ ...imageOptions, filter: key as keyof typeof FILTERS })}
-                            className={imageOptions.filter === key ? 'bg-blue-600 dark:bg-blue-700' : ''}
-                          >
-                            {key.charAt(0).toUpperCase() + key.slice(1)}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Effects & Optimizations */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-bold flex items-center gap-2 mb-2"><Sparkles className="w-5 h-5 text-teal-500" />Effects & Optimizations</h3>
-                      <div className="grid sm:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                          <Button
-                            variant={imageOptions.grayscale ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setImageOptions({ ...imageOptions, grayscale: !imageOptions.grayscale })}
-                            className={imageOptions.grayscale ? 'bg-blue-600 dark:bg-blue-700' : ''}
-                          >
-                            <Droplet className="w-4 h-4 mr-2" />
-                            Grayscale
-                          </Button>
-                          <Button
-                            variant={imageOptions.optimize ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setImageOptions({ ...imageOptions, optimize: !imageOptions.optimize })}
-                            className={imageOptions.optimize ? 'bg-blue-600 dark:bg-blue-700' : ''}
-                          >
-                            <Sparkles className="w-4 h-4 mr-2" />
-                            Optimize
-                          </Button>
-                        </div>
-                        <div>
-                          <Label className="text-sm">Blur: <span className="text-teal-600">{imageOptions.blur.toFixed(1)}</span></Label>
-                          <Slider
-                            value={[imageOptions.blur]}
-                            onValueChange={(value) => setImageOptions({ ...imageOptions, blur: value[0] })}
-                            min={0}
-                            max={10}
-                            step={0.1}
-                            className="accent-teal-500"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm">Sharpen: <span className="text-teal-600">{imageOptions.sharpen.toFixed(1)}</span></Label>
-                          <Slider
-                            value={[imageOptions.sharpen]}
-                            onValueChange={(value) => setImageOptions({ ...imageOptions, sharpen: value[0] })}
-                            min={0}
-                            max={10}
-                            step={0.1}
-                            className="accent-teal-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Format Options */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-bold flex items-center gap-2 mb-2"><Settings className="w-5 h-5 text-blue-500" />Format Options</h3>
-                      <div className="grid sm:grid-cols-3 gap-6">
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            id="preserve-metadata"
-                            checked={imageOptions.preserveMetadata}
-                            onCheckedChange={(checked) => setImageOptions({ ...imageOptions, preserveMetadata: checked })}
-                          />
-                          <Label htmlFor="preserve-metadata">Preserve Metadata</Label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            id="progressive"
-                            checked={imageOptions.progressive}
-                            onCheckedChange={(checked) => setImageOptions({ ...imageOptions, progressive: checked })}
-                          />
-                          <Label htmlFor="progressive">Progressive Loading</Label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            id="lossless"
-                            checked={imageOptions.lossless}
-                            onCheckedChange={(checked) => setImageOptions({ ...imageOptions, lossless: checked })}
-                          />
-                          <Label htmlFor="lossless">Lossless Compression</Label>
-                        </div>
-                      </div>
+                      )}
                     </div>
 
                     {/* Social Media Optimization */}
@@ -932,24 +930,34 @@ export default function FileConverter() {
                               <SelectItem value="custom">Custom</SelectItem>
                               <SelectItem value="instagram">
                                 <div className="flex items-center gap-2">
-                                  <Instagram className="w-4 h-4" />
+                                  <Instagram className="w-4 h-4 text-pink-500" />
                                   Instagram
                                 </div>
                               </SelectItem>
-                              {Object.keys(SOCIAL_MEDIA_PRESETS)
-                                .filter(platform => platform !== 'instagram')
-                                .map((platform) => (
-                                  <SelectItem key={platform} value={platform}>
-                                    <div className="flex items-center gap-2">
-                                      {platform === 'facebook' ? <Share2 className="w-4 h-4" /> :
-                                       platform === 'twitter' ? <Share2 className="w-4 h-4" /> :
-                                       platform === 'linkedin' ? <Share2 className="w-4 h-4" /> :
-                                       platform === 'pinterest' ? <Share2 className="w-4 h-4" /> :
-                                       <Share2 className="w-4 h-4" />}
-                                      {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                                    </div>
-                                  </SelectItem>
-                              ))}
+                              <SelectItem value="facebook">
+                                <div className="flex items-center gap-2">
+                                  <Facebook className="w-4 h-4 text-blue-600" />
+                                  Facebook
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="twitter">
+                                <div className="flex items-center gap-2">
+                                  <Twitter className="w-4 h-4 text-sky-400" />
+                                  Twitter
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="linkedin">
+                                <div className="flex items-center gap-2">
+                                  <Linkedin className="w-4 h-4 text-blue-700" />
+                                  LinkedIn
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="pinterest">
+                                <div className="flex items-center gap-2">
+                                  <Share2 className="w-4 h-4 text-red-500" />
+                                  Pinterest
+                                </div>
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -967,7 +975,12 @@ export default function FileConverter() {
                               <SelectContent className="bg-white dark:bg-gray-700">
                                 {Object.entries(SOCIAL_MEDIA_PRESETS[socialMediaPlatform]).map(([type, preset]) => (
                                   <SelectItem key={type} value={type}>
-                                    {preset.label}
+                                    <div className="flex items-center gap-2">
+                                      <span className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold">
+                                        {preset.width}×{preset.height}
+                                      </span>
+                                      {preset.label}
+                                    </div>
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -993,42 +1006,247 @@ export default function FileConverter() {
                         </div>
                       )}
                     </div>
-                  </div>
-                )}
 
-                {/* Convert Button */}
-                <Button
-                  onClick={handleConvert}
-                  disabled={!canConvert || isConverting}
-                  className="w-full h-12 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
-                >
-                  {isConverting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Converting...
-                    </>
-                  ) : (
-                    <>
-                      Convert Image
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </>
-                  )}
-                </Button>
+                    {/* Image Adjustments */}
+                    <div className="space-y-6">
+                      <h3 className="text-lg font-bold flex items-center gap-2">
+                        <Palette className="w-5 h-5 text-purple-500" />
+                        Image Adjustments
+                      </h3>
+                      
+                      {/* Quality and Rotation */}
+                      <div className="grid sm:grid-cols-2 gap-8">
+                        <div>
+                          <Label className="text-sm font-semibold mb-2 block">
+                            Quality: <span className="text-blue-600">{imageOptions.quality}%</span>
+                          </Label>
+                          <Slider
+                            value={[imageOptions.quality]}
+                            onValueChange={(value) => setImageOptions({ ...imageOptions, quality: value[0] })}
+                            min={1}
+                            max={100}
+                            step={1}
+                            className={sliderColorClass('blue')}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-sm font-semibold mb-2 block">
+                            Rotation: <span className="text-blue-600">{imageOptions.rotate}°</span>
+                          </Label>
+                          <Slider
+                            value={[imageOptions.rotate]}
+                            onValueChange={(value) => setImageOptions({ ...imageOptions, rotate: value[0] })}
+                            min={0}
+                            max={360}
+                            step={90}
+                            className={sliderColorClass('blue')}
+                          />
+                        </div>
+                      </div>
 
-                {/* Conversion Result */}
-                {convertedFile && (
-                  <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Download className="w-6 h-6 text-green-600 dark:text-green-400" />
-                      <div>
-                        <p className="font-medium">Conversion Complete!</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
+                      {/* Dimensions */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-semibold">Dimensions</Label>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              if (imageMetadata) {
+                                setImageOptions({
+                                  ...imageOptions,
+                                  width: imageMetadata.width,
+                                  height: imageMetadata.height
+                                })
+                              }
+                            }}
+                          >
+                            <RotateCw className="w-4 h-4 mr-2" />
+                            Reset to Original
+                          </Button>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                          <div>
+                            <Label className="text-sm">Width (px)</Label>
+                            <input
+                              type="number"
+                              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
+                              value={imageOptions.width || ''}
+                              onChange={(e) => {
+                                setInstagramPreset('custom')
+                                setImageOptions({ ...imageOptions, width: e.target.value ? parseInt(e.target.value) : undefined })
+                              }}
+                              placeholder="Original width"
+                              min={1}
+                              max={8000}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">Height (px)</Label>
+                            <input
+                              type="number"
+                              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
+                              value={imageOptions.height || ''}
+                              onChange={(e) => {
+                                setInstagramPreset('custom')
+                                setImageOptions({ ...imageOptions, height: e.target.value ? parseInt(e.target.value) : undefined })
+                              }}
+                              placeholder="Original height"
+                              min={1}
+                              max={8000}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Color Adjustments */}
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold">Color Adjustments</h4>
+                        <div className="grid sm:grid-cols-3 gap-6">
+                          <div>
+                            <Label className="text-sm">
+                              Brightness: <span className="text-purple-600">{imageOptions.brightness}%</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.brightness]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, brightness: value[0] })}
+                              min={-100}
+                              max={100}
+                              step={1}
+                              className={sliderColorClass('purple')}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">
+                              Contrast: <span className="text-purple-600">{imageOptions.contrast}%</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.contrast]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, contrast: value[0] })}
+                              min={-100}
+                              max={100}
+                              step={1}
+                              className={sliderColorClass('purple')}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">
+                              Saturation: <span className="text-purple-600">{imageOptions.saturation}%</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.saturation]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, saturation: value[0] })}
+                              min={-100}
+                              max={100}
+                              step={1}
+                              className={sliderColorClass('purple')}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Effects */}
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold">Effects</h4>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                          <div>
+                            <Label className="text-sm">
+                              Blur: <span className="text-teal-600">{imageOptions.blur.toFixed(1)}</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.blur]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, blur: value[0] })}
+                              min={0}
+                              max={10}
+                              step={0.1}
+                              className={sliderColorClass('teal')}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">
+                              Sharpen: <span className="text-teal-600">{imageOptions.sharpen.toFixed(1)}</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.sharpen]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, sharpen: value[0] })}
+                              min={0}
+                              max={10}
+                              step={0.1}
+                              className={sliderColorClass('teal')}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            variant={imageOptions.grayscale ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setImageOptions({ ...imageOptions, grayscale: !imageOptions.grayscale })}
+                            className={imageOptions.grayscale ? 'bg-blue-600 dark:bg-blue-700' : ''}
+                          >
+                            <Droplet className="w-4 h-4 mr-2" />
+                            Grayscale
+                          </Button>
+                          <Button
+                            variant={imageOptions.optimize ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setImageOptions({ ...imageOptions, optimize: !imageOptions.optimize })}
+                            className={imageOptions.optimize ? 'bg-blue-600 dark:bg-blue-700' : ''}
+                          >
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Optimize
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Filters */}
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold">Filters</h4>
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                          {Object.entries(FILTERS).map(([key]) => (
+                            <Button
+                              key={key}
+                              variant={imageOptions.filter === key ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setImageOptions({ ...imageOptions, filter: key as keyof typeof FILTERS })}
+                              className={imageOptions.filter === key ? 'bg-blue-600 dark:bg-blue-700' : ''}
+                            >
+                              {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Format Options */}
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold">Format Options</h4>
+                        <div className="grid sm:grid-cols-3 gap-6">
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              id="preserve-metadata"
+                              checked={imageOptions.preserveMetadata}
+                              onCheckedChange={(checked) => setImageOptions({ ...imageOptions, preserveMetadata: checked })}
+                            />
+                            <Label htmlFor="preserve-metadata">Preserve Metadata</Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              id="progressive"
+                              checked={imageOptions.progressive}
+                              onCheckedChange={(checked) => setImageOptions({ ...imageOptions, progressive: checked })}
+                            />
+                            <Label htmlFor="progressive">Progressive Loading</Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              id="lossless"
+                              checked={imageOptions.lossless}
+                              onCheckedChange={(checked) => setImageOptions({ ...imageOptions, lossless: checked })}
+                            />
+                            <Label htmlFor="lossless">Lossless Compression</Label>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <Button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download
-                    </Button>
                   </div>
                 )}
               </CardContent>
