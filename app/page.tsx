@@ -662,8 +662,6 @@ export default function FileConverter() {
         <GoogleAdClient
           adClient="ca-pub-1009479093659621"
           adSlot="8774727539"
-          style={{ display: "block", width: "100%", maxWidth: 728, height: 90, borderRadius: "0.75rem", overflow: "hidden" }}
-          className="rounded-xl"
           format="auto"
           responsive={true}
         />
@@ -1323,9 +1321,8 @@ export default function FileConverter() {
               <GoogleAdClient
                 adClient="ca-pub-1009479093659621"
                 adSlot="8774727539"
-                style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
-                className="rounded-xl mx-auto"
                 format="rectangle"
+                layout="in-article"
               />
             </motion.div>
             <motion.div
@@ -1456,6 +1453,8 @@ export default function FileConverter() {
           aria-modal="true"
           aria-label="Cookie preferences dialog"
         >
+
+          
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
             <div className="flex items-center gap-3 mb-2">
               <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />

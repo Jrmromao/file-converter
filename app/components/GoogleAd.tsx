@@ -1,8 +1,4 @@
-// app/components/GoogleAd.tsx
-"use client"
-
-import React, { useEffect } from 'react'
-import Script from 'next/script'
+import React, { useEffect } from 'react';
 
 interface GoogleAdProps {
   adSlot: string
@@ -11,41 +7,37 @@ interface GoogleAdProps {
   className?: string
   format?: string
   responsive?: boolean
+  layout?: string
 }
 
-export const GoogleAd: React.FC<GoogleAdProps> = ({
-  adSlot,
-  adClient,
-  style = { display: "block" },
-  className = "",
-  format = "auto",
-  responsive = true,
+export const GoogleAd: React.FC<GoogleAdProps> = ({ 
+    adSlot,
+    adClient,
+    style = { display: "block" },
+    className = "",
+    format = "auto",
+    responsive = true,
+    layout = "",
+
 }) => {
   useEffect(() => {
     try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({})
-    } catch (err) {
-      console.error('AdSense error:', err)
+      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+      (window as any).adsbygoogle.push({});
+    } catch (e) {
+      console.error('Error loading ads:', e);
     }
-  }, [])
+  }, []);
 
   return (
-    <>
-      <Script
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`}
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-      <ins
-        className={`adsbygoogle ${className}`}
-        style={style}
-        data-ad-client={adClient}
-        data-ad-slot={adSlot}
-        data-ad-format={format}
-        data-full-width-responsive={responsive ? "true" : "false"}
-      />
-    </>
-  )
-}
+    <ins className={`adsbygoogle ${className}`}
+         style={style}
+         data-full-width-responsive={responsive ? "true" : "false"}
+         data-ad-client={adClient}
+         data-ad-slot={adSlot}
+         data-ad-format={format}
+         data-ad-layout={layout}></ins>
+  );
+};
+
+ 
