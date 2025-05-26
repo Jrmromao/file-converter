@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Moon, Sun, Instagram, Share2, Wand2, FileStack, Gauge, Palette, Camera, X, Cookie, Facebook, Twitter, Linkedin, Github, Globe, Printer, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,8 +21,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { GoogleAd } from "./components/GoogleAd"
+import { GoogleAdClient } from "@/components/GoogleAdClient"
 import Head from 'next/head'
+import { motion } from "framer-motion"
 
 // Helper for consistent slider styling
 const sliderColorClass = (color: string) => `data-[state=checked]:bg-${color}-600 [&>span:first-child]:bg-${color}-500 dark:[&>span:first-child]:bg-${color}-600 [&>span:last-child>span]:bg-white dark:[&>span:last-child>span]:bg-neutral-200 [&>span:last-child>span]:border-${color}-500 dark:[&>span:last-child>span]:border-${color}-600`
@@ -206,6 +207,16 @@ export default function FileConverter() {
   const [showCookieConsent, setShowCookieConsent] = useState(false)
   const [cookieConsent, setCookieConsent] = useState<'accepted' | 'denied' | null>(null)
   const [mode, setMode] = useState<'convert' | 'optimize'>('convert')
+  const uploadAreaRef = useRef<HTMLDivElement>(null)
+
+  // Add new state for advanced cookie preferences
+  const [showCookieSettings, setShowCookieSettings] = useState(false)
+  const [analyticsConsent, setAnalyticsConsent] = useState(cookieConsent === 'accepted')
+  const [adsConsent, setAdsConsent] = useState(cookieConsent === 'accepted')
+
+  // 1. Add a loading state and error state for preview
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
+  const [previewError, setPreviewError] = useState<string | null>(null)
 
   useEffect(() => {
     return () => {
@@ -515,6 +526,22 @@ export default function FileConverter() {
     setBatchMode(false)
   }
 
+  // 2. Update the Preview button logic to always trigger updatePreview before opening dialog
+  const handleShowPreview = async () => {
+    if (!selectedFile || !detectedFormat || !toFormat) return
+    setIsPreviewLoading(true)
+    setPreviewError(null)
+    try {
+      await updatePreview()
+      setShowPreview(true)
+    } catch (err) {
+      setPreviewError("Failed to generate preview. Please try again.")
+      setShowPreview(false)
+    } finally {
+      setIsPreviewLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 font-sans">
       <Head>
@@ -559,7 +586,12 @@ export default function FileConverter() {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 py-8"
+      >
         <div className="flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-16">
           <div className="flex flex-col items-center md:items-start">
             <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-3xl shadow-2xl mb-4">
@@ -591,11 +623,11 @@ export default function FileConverter() {
               Transform your images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest. Perfect for social media posts, stories, and profiles.
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8" onClick={() => uploadAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                 <Upload className="w-5 h-5 mr-2" />
                 Upload Image
               </Button>
-              <Button size="lg" variant="outline" className="border-2">
+              <Button size="lg" variant="outline" className="border-2" >
                 <FileStack className="w-5 h-5 mr-2" />
                 Batch Process
               </Button>
@@ -620,13 +652,31 @@ export default function FileConverter() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
+
+      {/* Top Banner Ad (below hero, centered, subtle margin) */}
+      <div className="flex justify-center mt-4 mb-8">
+        <GoogleAdClient
+          adClient="ca-pub-1009479093659621"
+          adSlot="8774727539"
+          style={{ display: "block", width: "100%", maxWidth: 728, height: 90, borderRadius: "0.75rem", overflow: "hidden" }}
+          className="rounded-xl"
+          format="auto"
+          responsive={true}
+        />
+      </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 pb-16">
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Converter Section */}
-          <div className="lg:col-span-2">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="lg:col-span-2"
+          >
             <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
               <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
                 <div className="flex items-center justify-between">
@@ -645,10 +695,11 @@ export default function FileConverter() {
                       variant="ghost"
                       size="sm"
                       className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                      onClick={() => setShowPreview(!showPreview)}
+                      onClick={handleShowPreview}
+                      disabled={isPreviewLoading || !selectedFile || !toFormat}
                     >
                       <Maximize2 className="w-4 h-4 mr-2" />
-                      Preview
+                      {isPreviewLoading ? 'Loading...' : 'Preview'}
                     </Button>
                   </div>
                 </div>
@@ -692,7 +743,11 @@ export default function FileConverter() {
                 </div>
 
                 {/* File Upload Area */}
-                <div
+                <motion.div
+                  ref={uploadAreaRef}
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, amount: 0.5 }}
                   className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
                     ${isDragOver 
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 scale-[1.02]' 
@@ -785,7 +840,7 @@ export default function FileConverter() {
                       </p>
                     </div>
                   )}
-                </div>
+                </motion.div>
 
                 {/* Format Selection */}
                 {mode === 'convert' && (
@@ -1251,170 +1306,246 @@ export default function FileConverter() {
                 )}
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold">Features</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <Zap className="w-6 h-6 text-blue-500 dark:text-blue-400" />
-                  <div>
-                    <p className="font-medium">Fast Conversion</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Convert images in seconds with high quality.</p>
+          {/* Sidebar (Desktop Only) */}
+          <div className="space-y-6 hidden lg:block">
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="sticky top-24 mb-4"
+            >
+              <GoogleAdClient
+                adClient="ca-pub-1009479093659621"
+                adSlot="8774727539"
+                style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
+                className="rounded-xl mx-auto"
+                format="rectangle"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            >
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold">Features</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Zap className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+                    <div>
+                      <p className="font-medium">Fast Conversion</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Convert images in seconds with high quality.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Share2 className="w-6 h-6 text-green-500 dark:text-green-400" />
-                  <div>
-                    <p className="font-medium">Social Media Ready</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Optimize for Instagram, Facebook, Twitter, LinkedIn & Pinterest with perfect dimensions.</p>
+                  <div className="flex items-start gap-3">
+                    <Share2 className="w-6 h-6 text-green-500 dark:text-green-400" />
+                    <div>
+                      <p className="font-medium">Social Media Ready</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Optimize for Instagram, Facebook, Twitter, LinkedIn & Pinterest with perfect dimensions.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Shield className="w-6 h-6 text-purple-500 dark:text-purple-400" />
-                  <div>
-                    <p className="font-medium">Secure Processing</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Files are processed securely and not stored.</p>
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-6 h-6 text-purple-500 dark:text-purple-400" />
+                    <div>
+                      <p className="font-medium">Secure Processing</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Files are processed securely and not stored.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Layers className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-                  <div>
-                    <p className="font-medium">Advanced Tools</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Resize, rotate, apply filters, and enhance quality.</p>
+                  <div className="flex items-start gap-3">
+                    <Layers className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+                    <div>
+                      <p className="font-medium">Advanced Tools</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Resize, rotate, apply filters, and enhance quality.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Sparkles className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
-                  <div>
-                    <p className="font-medium">Smart Optimization</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Automatic compression and quality optimization.</p>
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
+                    <div>
+                      <p className="font-medium">Smart Optimization</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Automatic compression and quality optimization.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Wand2 className="w-6 h-6 text-purple-500 dark:text-purple-400" />
-                  <div>
-                    <p className="font-medium">AI Enhancement</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Smart image enhancement and optimization.</p>
+                  <div className="flex items-start gap-3">
+                    <Wand2 className="w-6 h-6 text-purple-500 dark:text-purple-400" />
+                    <div>
+                      <p className="font-medium">AI Enhancement</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Smart image enhancement and optimization.</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <FileStack className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-                  <div>
-                    <p className="font-medium">Batch Processing</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Convert and optimize multiple images at once.</p>
+                  <div className="flex items-start gap-3">
+                    <FileStack className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+                    <div>
+                      <p className="font-medium">Batch Processing</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Convert and optimize multiple images at once.</p>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            <GoogleAd
-              adClient="ca-pub-1009479093659621"
-              adSlot="8774727539"
-              style={{ display: "block", width: "100%", maxWidth: "300px", minHeight: "250px", borderRadius: "0.75rem", overflow: "hidden" }}
-              className="rounded-xl"
-            />
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="max-w-7xl mx-auto px-4 py-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-600 dark:text-gray-400">
-        <div className="flex justify-center gap-6 mb-4">
-          <a href="/privacy-policy" className="hover:text-blue-600 dark:hover:text-blue-400">Privacy Policy</a>
-          <a href="/terms-of-service" className="hover:text-blue-600 dark:hover:text-blue-400">Terms of Service</a>
-          <a href="/contact" className="hover:text-blue-600 dark:hover:text-blue-400">Contact Us</a>
-          <a href="/about" className="hover:text-blue-600 dark:hover:text-blue-400">About</a>
-          <a href="/faq" className="hover:text-blue-600 dark:hover:text-blue-400">FAQ</a>
-        </div>
-        <p>© {new Date().getFullYear()} Image Converter. All rights reserved.</p>
-      </footer>
-
       {/* Cookie Consent Banner */}
-      {showCookieConsent && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 z-50" style={{boxShadow: '0 -2px 8px rgba(0,0,0,0.04)'}}>
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex-1 text-gray-700 dark:text-gray-200 text-sm flex items-center gap-2 min-w-0">
-              <span className="truncate">
-                We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. Please read our
-                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline ml-1">Privacy Policy</a>
-                for more information.
-              </span>
+      {showCookieConsent && !showCookieSettings && (
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Cookie consent dialog"
+        >
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
+            <div className="flex items-center gap-3">
+              <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
+              <span className="font-semibold text-lg">We Value Your Privacy</span>
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <p className="text-sm text-gray-700 dark:text-gray-200">
+              We use cookies to enhance your experience, serve personalized content and ads, and analyze our traffic. You can accept all, decline all, or manage your preferences. Read our
+              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">Privacy Policy</a> for more information.
+            </p>
+            <div className="flex flex-wrap gap-2 w-full justify-end">
               <Button
                 variant="ghost"
                 className="text-gray-700 dark:text-gray-200 hover:underline px-2 py-1 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
-                onClick={() => setShowCookieConsent(false)}
+                onClick={() => setShowCookieSettings(true)}
                 aria-label="Manage cookie preferences"
               >
-                Manage preferences
+                Manage Preferences
               </Button>
               <Button
                 variant="outline"
                 className="border-gray-300 dark:border-gray-600 px-4 py-2 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
-                onClick={() => handleCookieConsent(false)}
+                onClick={() => { handleCookieConsent(false); setAnalyticsConsent(false); setAdsConsent(false); }}
                 aria-label="Decline all cookies"
-              >
-                Decline all
-              </Button>
-              <Button
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
-                onClick={() => handleCookieConsent(true)}
-                aria-label="Accept all cookies"
-              >
-                Accept all
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cookie Settings Dialog */}
-      <Dialog open={!showCookieConsent && cookieConsent === null} onOpenChange={setShowCookieConsent}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Cookie className="w-5 h-5" />
-              Cookie Settings
-            </DialogTitle>
-            <DialogDescription>
-              We use cookies to improve your experience on our website. You can choose which cookies to accept.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Analytics Cookies</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Help us understand how visitors interact with our website
-                </p>
-              </div>
-              <Switch
-                id="analytics-cookies"
-                checked={cookieConsent === 'accepted'}
-                onCheckedChange={(checked) => handleCookieConsent(checked)}
-              />
-            </div>
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => handleCookieConsent(false)}
-                className="border-gray-300 dark:border-gray-600"
               >
                 Decline All
               </Button>
               <Button
-                onClick={() => handleCookieConsent(true)}
-                className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
+                onClick={() => { handleCookieConsent(true); setAnalyticsConsent(true); setAdsConsent(true); }}
+                aria-label="Accept all cookies"
               >
                 Accept All
               </Button>
             </div>
           </div>
+        </motion.div>
+      )}
+
+      {showCookieConsent && showCookieSettings && (
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Cookie preferences dialog"
+        >
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
+            <div className="flex items-center gap-3 mb-2">
+              <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
+              <span className="font-semibold text-lg">Cookie Preferences</span>
+            </div>
+            <div className="w-full space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-medium">Necessary Cookies</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Required for basic site functionality. Always enabled.</p>
+                </div>
+                <Switch checked disabled id="necessary-cookies" />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-medium">Analytics Cookies</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Help us understand how visitors interact with our website.</p>
+                </div>
+                <Switch
+                  id="analytics-cookies"
+                  checked={analyticsConsent}
+                  onCheckedChange={setAnalyticsConsent}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-medium">Personalization & Ads Cookies</span>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Used to show you personalized content and ads.</p>
+                </div>
+                <Switch
+                  id="ads-cookies"
+                  checked={adsConsent}
+                  onCheckedChange={setAdsConsent}
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 w-full justify-end mt-2">
+              <Button
+                variant="ghost"
+                className="text-gray-700 dark:text-gray-200 hover:underline px-2 py-1 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
+                onClick={() => setShowCookieSettings(false)}
+                aria-label="Back to summary"
+              >
+                Back
+              </Button>
+              <Button
+                variant="outline"
+                className="border-gray-300 dark:border-gray-600 px-4 py-2 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
+                onClick={() => { handleCookieConsent(false); setShowCookieSettings(false); setAnalyticsConsent(false); setAdsConsent(false); }}
+                aria-label="Decline all cookies"
+              >
+                Decline All
+              </Button>
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
+                onClick={() => {
+                  // Save preferences
+                  handleCookieConsent(analyticsConsent || adsConsent)
+                  setShowCookieSettings(false)
+                }}
+                aria-label="Save cookie preferences"
+              >
+                Save Preferences
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Add a Dialog/modal for the preview image at the end of the main content */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Image Preview</DialogTitle>
+            <DialogDescription>
+              This is a preview of your image with the current settings.
+            </DialogDescription>
+          </DialogHeader>
+          {isPreviewLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            </div>
+          ) : previewError ? (
+            <div className="text-red-600 text-center py-8">{previewError}</div>
+          ) : previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="max-w-full max-h-[60vh] mx-auto rounded-lg shadow-lg"
+            />
+          ) : (
+            <div className="text-gray-500 text-center py-8">No preview available.</div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
