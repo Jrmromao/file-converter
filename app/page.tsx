@@ -218,6 +218,9 @@ export default function FileConverter() {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false)
   const [previewError, setPreviewError] = useState<string | null>(null)
 
+  // Add new state for Coming Soon modal
+  const [showComingSoon, setShowComingSoon] = useState(false)
+
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -627,7 +630,7 @@ export default function FileConverter() {
                 <Upload className="w-5 h-5 mr-2" />
                 Upload Image
               </Button>
-              <Button size="lg" variant="outline" className="border-2" >
+              <Button size="lg" variant="outline" className="border-2" onClick={() => setShowComingSoon(true)}>
                 <FileStack className="w-5 h-5 mr-2" />
                 Batch Process
               </Button>
@@ -1546,6 +1549,23 @@ export default function FileConverter() {
           ) : (
             <div className="text-gray-500 text-center py-8">No preview available.</div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Add the Coming Soon modal at the end of the main content */}
+      <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Coming Soon!</DialogTitle>
+            <DialogDescription>
+              The Batch Processing feature will be available in the next release. You'll soon be able to convert and optimize multiple images at once. Stay tuned!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end mt-4">
+            <Button onClick={() => setShowComingSoon(false)} className="bg-blue-600 hover:bg-blue-700 text-white">
+              Close
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
