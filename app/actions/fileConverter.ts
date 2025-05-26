@@ -61,6 +61,8 @@ export interface ImageOptions {
   brightness?: number
   contrast?: number
   saturation?: number
+  temperature?: number
+  tint?: number
   crop?: {
     x: number
     y: number
@@ -105,6 +107,8 @@ export async function convertFile(
     const brightness = formData.get('brightness') ? parseFloat(formData.get('brightness') as string) : undefined
     const contrast = formData.get('contrast') ? parseFloat(formData.get('contrast') as string) : undefined
     const saturation = formData.get('saturation') ? parseFloat(formData.get('saturation') as string) : undefined
+    const temperature = formData.get('temperature') ? parseFloat(formData.get('temperature') as string) : undefined
+    const tint = formData.get('tint') ? parseFloat(formData.get('tint') as string) : undefined
     const preserveMetadata = formData.get('preserveMetadata') === 'true'
     const progressive = formData.get('progressive') === 'true'
     const lossless = formData.get('lossless') === 'true'
@@ -112,13 +116,16 @@ export async function convertFile(
     // For preview, we'll use a lower quality and skip some optimizations
     const isPreviewMode = isPreview || formData.get('isPreview') === 'true'
 
-    if (!file || !fromFormat || !toFormat) {
+    if (!file || !fromFormat) {
       return {
         success: false,
-        error: 'Missing required fields: file, fromFormat, and toFormat are required',
+        error: 'Missing required fields: file and fromFormat are required',
         fileName: file?.name || 'unknown'
       }
     }
+
+    // For preview mode, if no toFormat is specified, use the same as fromFormat
+    const targetFormat = toFormat || fromFormat
 
     // Check file size
     if (file.size > MAX_FILE_SIZE) {
@@ -131,7 +138,7 @@ export async function convertFile(
 
     // Validate formats
     if (!SUPPORTED_FORMATS.includes(fromFormat.toLowerCase() as typeof SUPPORTED_FORMATS[number]) || 
-        !SUPPORTED_FORMATS.includes(toFormat.toLowerCase() as typeof SUPPORTED_FORMATS[number])) {
+        !SUPPORTED_FORMATS.includes(targetFormat.toLowerCase() as typeof SUPPORTED_FORMATS[number])) {
       return {
         success: false,
         error: `Unsupported image format. Supported formats are: ${SUPPORTED_FORMATS.join(', ')}`,
@@ -143,7 +150,7 @@ export async function convertFile(
     const tempDir = tmpdir()
     const timestamp = Date.now()
     inputPath = join(tempDir, `${timestamp}-${file.name}`)
-    outputPath = join(tempDir, `${timestamp}-${file.name.split('.')[0]}.${toFormat}`)
+    outputPath = join(tempDir, `${timestamp}-${file.name.split('.')[0]}.${targetFormat}`)
 
     // Write uploaded file to temp directory
     const buffer = Buffer.from(await file.arrayBuffer())
@@ -151,9 +158,9 @@ export async function convertFile(
 
     try {
       // Get the correct Sharp format identifier
-      const sharpFormat = SHARP_FORMATS[toFormat.toLowerCase() as keyof typeof SHARP_FORMATS]
+      const sharpFormat = SHARP_FORMATS[targetFormat.toLowerCase() as keyof typeof SHARP_FORMATS]
       if (!sharpFormat) {
-        throw new Error(`Unsupported image format: ${toFormat}`)
+        throw new Error(`Unsupported image format: ${targetFormat}`)
       }
 
       // Create Sharp instance
@@ -303,7 +310,7 @@ export async function convertFile(
       return {
         success: true,
         data: outputBuffer.toString('base64'),
-        fileName: `${file.name.split('.')[0]}.${toFormat}`,
+        fileName: `${file.name.split('.')[0]}.${targetFormat}`,
         progress: 100,
         metadata: {
           width: outputMetadata.width,

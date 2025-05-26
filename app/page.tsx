@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Moon, Sun, Instagram, Share2, Wand2, FileStack, Gauge, Palette, Camera, X, Cookie, Facebook, Twitter, Linkedin, Github, Globe, Printer, Smartphone } from "lucide-react"
+import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Moon, Sun, Instagram, Share2, Wand2, FileStack, Gauge, Palette, Camera, X, Cookie, Facebook, Twitter, Linkedin, Github, Globe, Printer, Smartphone, Bell, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -24,9 +24,13 @@ import {
 import { GoogleAdClient } from "@/components/GoogleAdClient"
 import Head from 'next/head'
 import { motion } from "framer-motion"
+import { subscribeToUpdates } from './actions/subscribe'
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 
 // Helper for consistent slider styling
-const sliderColorClass = (color: string) => `data-[state=checked]:bg-${color}-600 [&>span:first-child]:bg-${color}-500 dark:[&>span:first-child]:bg-${color}-600 [&>span:last-child>span]:bg-white dark:[&>span:last-child>span]:bg-neutral-200 [&>span:last-child>span]:border-${color}-500 dark:[&>span:last-child>span]:border-${color}-600`
+const sliderColorClass = (color: string, darkColor?: string) =>
+  `data-[state=checked]:bg-${color}-600 [&>span:first-child]:bg-${color}-500 dark:[&>span:first-child]:bg-${darkColor || color}-600 [&>span:last-child>span]:bg-white dark:[&>span:last-child>span]:bg-neutral-200 [&>span:last-child>span]:border-${color}-500 dark:[&>span:last-child>span]:border-${darkColor || color}-600`
 
 function DarkModeToggle() {
   useEffect(() => {
@@ -167,6 +171,8 @@ export default function FileConverter() {
   const [toFormat, setToFormat] = useState("")
   const [isConverting, setIsConverting] = useState(false)
   const [convertedFile, setConvertedFile] = useState<string | null>(null)
+  const [convertedFileData, setConvertedFileData] = useState<string | null>(null)
+  const [convertedFileType, setConvertedFileType] = useState<string | null>(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -220,6 +226,18 @@ export default function FileConverter() {
 
   // Add new state for Coming Soon modal
   const [showComingSoon, setShowComingSoon] = useState(false)
+
+  // Add new state for subscription
+  const [email, setEmail] = useState('')
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([])
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const [subscriptionStatus, setSubscriptionStatus] = useState<{
+    type: 'success' | 'error' | null
+    message: string
+  }>({ type: null, message: '' })
+
+  // Add new state for subscription dialog
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false)
 
   useEffect(() => {
     return () => {
@@ -354,18 +372,27 @@ export default function FileConverter() {
       
       if (result.success && result.data) {
         setConvertedFile(result.fileName)
+        setConvertedFileData(result.data)
+        setConvertedFileType(toFormat)
+        // Convert base64 to Uint8Array
         const binaryString = atob(result.data)
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
           bytes[i] = binaryString.charCodeAt(i)
         }
-        const blob = new Blob([bytes], { type: `image/${toFormat}` })
+        // Use the correct MIME type
+        const mimeType = `image/${toFormat === 'jpg' ? 'jpeg' : toFormat}`
+        const blob = new Blob([bytes], { type: mimeType })
         const url = URL.createObjectURL(blob)
         const link = document.createElement("a")
         link.href = url
         link.download = result.fileName
+        document.body.appendChild(link)
         link.click()
-        URL.revokeObjectURL(url)
+        setTimeout(() => {
+          URL.revokeObjectURL(url)
+          document.body.removeChild(link)
+        }, 1000)
 
         if (result.metadata) {
           const compressionInfo = result.metadata.compressionRatio 
@@ -404,22 +431,37 @@ export default function FileConverter() {
   }
 
   const handleDownload = () => {
+    if (!convertedFileData || !convertedFileType || !convertedFile) return
+    const binaryString = atob(convertedFileData)
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    const mimeType = `image/${convertedFileType === 'jpg' ? 'jpeg' : convertedFileType}`
+    const blob = new Blob([bytes], { type: mimeType })
+    const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
-    link.href = "#"
-    link.download = convertedFile || "converted-file"
+    link.href = url
+    link.download = convertedFile
+    document.body.appendChild(link)
     link.click()
+    setTimeout(() => {
+      URL.revokeObjectURL(url)
+      document.body.removeChild(link)
+    }, 1000)
   }
 
   const canConvert = selectedFile && detectedFormat && toFormat && detectedFormat !== toFormat
 
   const updatePreview = async () => {
-    if (!selectedFile || !detectedFormat || !toFormat) return
+    if (!selectedFile || !detectedFormat) return
 
     try {
       const formData = new FormData()
       formData.append('file', selectedFile)
       formData.append('fromFormat', detectedFormat)
-      formData.append('toFormat', toFormat)
+      // For preview, we'll use the same format as input
+      formData.append('toFormat', toFormat || detectedFormat)
       formData.append('isPreview', 'true')
       
       Object.entries(imageOptions).forEach(([key, value]) => {
@@ -436,7 +478,7 @@ export default function FileConverter() {
         for (let i = 0; i < binaryString.length; i++) {
           bytes[i] = binaryString.charCodeAt(i)
         }
-        const blob = new Blob([bytes], { type: `image/${toFormat}` })
+        const blob = new Blob([bytes], { type: `image/${toFormat || detectedFormat}` })
         
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl)
@@ -452,7 +494,7 @@ export default function FileConverter() {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
-    if (selectedFile && detectedFormat && toFormat) {
+    if (selectedFile && detectedFormat) {
       timeoutId = setTimeout(updatePreview, 300)
     }
     return () => {
@@ -543,6 +585,43 @@ export default function FileConverter() {
     } finally {
       setIsPreviewLoading(false)
     }
+  }
+
+  // Add subscription handler
+  const handleSubscribe = async () => {
+    if (!email) {
+      setSubscriptionStatus({
+        type: 'error',
+        message: 'Please enter your email address.'
+      })
+      return
+    }
+
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setSubscriptionStatus({
+        type: 'error',
+        message: 'Please enter a valid email address.'
+      })
+      return
+    }
+
+    setIsSubscribing(true)
+    const result = await subscribeToUpdates(email, selectedInterests)
+    
+    if (result.success) {
+      setSubscriptionStatus({
+        type: 'success',
+        message: result.message || 'Successfully subscribed to updates!'
+      })
+      setEmail('')
+      setSelectedInterests([])
+    } else {
+      setSubscriptionStatus({
+        type: 'error',
+        message: result.error || 'Failed to subscribe. Please try again.'
+      })
+    }
+    setIsSubscribing(false)
   }
 
   return (
@@ -692,7 +771,7 @@ export default function FileConverter() {
                       <Settings className="w-4 h-4 mr-2" />
                       {showAdvanced ? 'Hide Options' : 'Show Options'}
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="ghost"
                       size="sm"
                       className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
@@ -701,7 +780,7 @@ export default function FileConverter() {
                     >
                       <Maximize2 className="w-4 h-4 mr-2" />
                       {isPreviewLoading ? 'Loading...' : 'Preview'}
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </CardHeader>
@@ -869,61 +948,6 @@ export default function FileConverter() {
                   </div>
                 )}
 
-                {/* Convert Button */}
-                <Button
-                  onClick={() => mode === 'convert' ? handleConvert() : handleConvert(true)}
-                  disabled={(!canConvert && mode === 'convert') || isConverting}
-                  className={`w-full h-12 transition-all duration-200 ${
-                    isConverting
-                      ? 'bg-blue-600/80'
-                      : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {isConverting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      {mode === 'convert' ? 'Converting...' : 'Optimizing...'}
-                    </>
-                  ) : (
-                    <>
-                      {mode === 'convert' ? (
-                        <>
-                          <FileText className="w-5 h-5 mr-2" />
-                          Convert Image
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-5 h-5 mr-2" />
-                          Optimize Image
-                        </>
-                      )}
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </>
-                  )}
-                </Button>
-
-                {/* Conversion Result */}
-                {convertedFile && (
-                  <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between animate-in slide-in-from-bottom-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
-                        <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
-                      </div>
-                      <div>
-                        <p className="font-medium">Conversion Complete!</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={handleDownload} 
-                      className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download
-                    </Button>
-                  </div>
-                )}
-
                 {showAdvanced && (
                   <div className="space-y-8 p-6 bg-white dark:bg-gray-800 rounded-2xl border border-blue-100 dark:border-blue-900 shadow-md">
                     {/* Quick Presets */}
@@ -1031,11 +1055,11 @@ export default function FileConverter() {
                               <SelectContent className="bg-white dark:bg-gray-700">
                                 {Object.entries(SOCIAL_MEDIA_PRESETS[socialMediaPlatform]).map(([type, preset]) => (
                                   <SelectItem key={type} value={type}>
-                                    <div className="flex items-center gap-2">
-                                      <span className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold">
+                                    <div className="flex items-center gap-3">
+                                      <span className="min-w-[64px] px-2 h-7 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold text-gray-700 dark:text-gray-200">
                                         {preset.width}×{preset.height}
                                       </span>
-                                      {preset.label}
+                                      <span className="whitespace-nowrap">{preset.label}</span>
                                     </div>
                                   </SelectItem>
                                 ))}
@@ -1182,7 +1206,7 @@ export default function FileConverter() {
                               min={-100}
                               max={100}
                               step={1}
-                              className={sliderColorClass('purple')}
+                              className={sliderColorClass('purple', 'blue')}
                             />
                           </div>
                           <div>
@@ -1237,7 +1261,11 @@ export default function FileConverter() {
                             variant={imageOptions.grayscale ? "default" : "outline"}
                             size="sm"
                             onClick={() => setImageOptions({ ...imageOptions, grayscale: !imageOptions.grayscale })}
-                            className={imageOptions.grayscale ? 'bg-blue-600 dark:bg-blue-700' : ''}
+                            className={
+                              imageOptions.grayscale
+                                ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                                : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                            }
                           >
                             <Droplet className="w-4 h-4 mr-2" />
                             Grayscale
@@ -1246,7 +1274,11 @@ export default function FileConverter() {
                             variant={imageOptions.optimize ? "default" : "outline"}
                             size="sm"
                             onClick={() => setImageOptions({ ...imageOptions, optimize: !imageOptions.optimize })}
-                            className={imageOptions.optimize ? 'bg-blue-600 dark:bg-blue-700' : ''}
+                            className={
+                              imageOptions.optimize
+                                ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                                : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                            }
                           >
                             <Sparkles className="w-4 h-4 mr-2" />
                             Optimize
@@ -1254,27 +1286,146 @@ export default function FileConverter() {
                         </div>
                       </div>
 
-                      {/* Filters */}
+                      {/* New Creative Tools Section */}
                       <div className="space-y-4">
-                        <h4 className="text-sm font-semibold">Filters</h4>
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                          {Object.entries(FILTERS).map(([key]) => (
-                            <Button
-                              key={key}
-                              variant={imageOptions.filter === key ? "default" : "outline"}
-                              size="sm"
-                              onClick={() => setImageOptions({ ...imageOptions, filter: key as keyof typeof FILTERS })}
-                              className={imageOptions.filter === key ? 'bg-blue-600 dark:bg-blue-700' : ''}
-                            >
-                              {key.charAt(0).toUpperCase() + key.slice(1)}
-                            </Button>
-                          ))}
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <Wand2 className="w-4 h-4 text-purple-500" />
+                          Creative Tools
+                        </h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Camera className="w-4 h-4 mr-2" />
+                            Auto-Enhance
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Layers className="w-4 h-4 mr-2" />
+                            Remove Background
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <FileStack className="w-4 h-4 mr-2" />
+                            Collage Maker
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Palette className="w-4 h-4 mr-2" />
+                            Color Grading
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Droplet className="w-4 h-4 mr-2" />
+                            Double Exposure
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Maximize2 className="w-4 h-4 mr-2" />
+                            Tilt-Shift
+                          </Button>
                         </div>
                       </div>
 
-                      {/* Format Options */}
+                      {/* New Color Tools Section */}
                       <div className="space-y-4">
-                        <h4 className="text-sm font-semibold">Format Options</h4>
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <Palette className="w-4 h-4 text-purple-500" />
+                          Color Tools
+                        </h4>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                          <div>
+                            <Label className="text-sm">
+                              Temperature: <span className="text-purple-600">{imageOptions.temperature || 0}°K</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.temperature || 0]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, temperature: value[0] })}
+                              min={-100}
+                              max={100}
+                              step={1}
+                              className={sliderColorClass('purple')}
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-sm">
+                              Tint: <span className="text-purple-600">{imageOptions.tint || 0}%</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.tint || 0]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, tint: value[0] })}
+                              min={-100}
+                              max={100}
+                              step={1}
+                              className={sliderColorClass('purple')}
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            Split Toning
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            Color Balance
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            Selective Color
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            Extract Palette
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* New Export Options Section */}
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <Download className="w-4 h-4 text-purple-500" />
+                          Export Options
+                        </h4>
                         <div className="grid sm:grid-cols-3 gap-6">
                           <div className="flex items-center gap-2">
                             <Switch
@@ -1301,8 +1452,101 @@ export default function FileConverter() {
                             <Label htmlFor="lossless">Lossless Compression</Label>
                           </div>
                         </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <FileStack className="w-4 h-4 mr-2" />
+                            Batch Export
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Info className="w-4 h-4 mr-2" />
+                            Edit Metadata
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Share2 className="w-4 h-4 mr-2" />
+                            Share Preset
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowComingSoon(true)}
+                            className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          >
+                            <Download className="w-4 h-4 mr-2" />
+                            Multiple Formats
+                          </Button>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/* Convert Button */}
+                <Button
+                  onClick={() => mode === 'convert' ? handleConvert() : handleConvert(true)}
+                  disabled={(!canConvert && mode === 'convert') || isConverting}
+                  className={`w-full h-12 transition-all duration-200 ${
+                    isConverting
+                      ? 'bg-blue-600/80'
+                      : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {isConverting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      {mode === 'convert' ? 'Converting...' : 'Optimizing...'}
+                    </>
+                  ) : (
+                    <>
+                      {mode === 'convert' ? (
+                        <>
+                          <FileText className="w-5 h-5 mr-2" />
+                          Convert Image
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2" />
+                          Optimize Image
+                        </>
+                      )}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </>
+                  )}
+                </Button>
+
+                {/* Conversion Result */}
+                {convertedFile && (
+                  <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between animate-in slide-in-from-bottom-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
+                        <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Conversion Complete!</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={handleDownload} 
+                      className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
                   </div>
                 )}
               </CardContent>
@@ -1318,12 +1562,15 @@ export default function FileConverter() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="sticky top-24 mb-4"
             >
-              <GoogleAdClient
-                adClient="ca-pub-1009479093659621"
-                adSlot="8774727539"
-                format="rectangle"
-                layout="in-article"
-              />
+              <div className="w-[300px] mx-auto mb-4">
+                <GoogleAdClient
+                  adClient="ca-pub-1009479093659621"
+                  adSlot="8774727539"
+                  style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
+                  className="rounded-xl"
+                  format="rectangle"
+                />
+              </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: 40 }}
@@ -1388,6 +1635,16 @@ export default function FileConverter() {
                 </CardContent>
               </Card>
             </motion.div>
+
+            <div className="w-[300px] mx-auto mb-4">
+                <GoogleAdClient
+                  adClient="ca-pub-1009479093659621"
+                  adSlot="8774727539"
+                  style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
+                  className="rounded-xl"
+                  format="rectangle"
+                />
+              </div>
           </div>
         </div>
       </main>
@@ -1453,8 +1710,6 @@ export default function FileConverter() {
           aria-modal="true"
           aria-label="Cookie preferences dialog"
         >
-
-          
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
             <div className="flex items-center gap-3 mb-2">
               <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
@@ -1553,17 +1808,312 @@ export default function FileConverter() {
 
       {/* Add the Coming Soon modal at the end of the main content */}
       <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Coming Soon!</DialogTitle>
-            <DialogDescription>
-              The Batch Processing feature will be available in the next release. You'll soon be able to convert and optimize multiple images at once. Stay tuned!
+            <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-blue-600" />
+              Upcoming Features
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              A focused roadmap of features we're developing to enhance your image editing experience.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end mt-4">
-            <Button onClick={() => setShowComingSoon(false)} className="bg-blue-600 hover:bg-blue-700 text-white">
-              Close
-            </Button>
+          
+          {/* Feature sections */}
+          <div className="grid sm:grid-cols-2 gap-4 mt-4">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Wand2 className="w-4 h-4 text-blue-600" />
+                Core Enhancements
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                  Smart Auto-Enhance
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                  Basic Background Removal
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                  Simple Object Removal
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                  Image Upscaling
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Palette className="w-4 h-4 text-indigo-600" />
+                Color & Effects
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                  Basic Color Grading
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                  Filter Presets
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                  HDR Effect
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                  Vintage Effects
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <FileStack className="w-4 h-4 text-teal-600" />
+                Workflow Tools
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                  Batch Processing
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                  Save & Load Presets
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                  Basic Metadata Editor
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                  Export to Multiple Formats
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-slate-50 dark:bg-slate-900/20 rounded-xl">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Share2 className="w-4 h-4 text-slate-600" />
+                Social & Sharing
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                  Social Media Presets
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                  Share Settings
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                  Quick Export
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                  Watermark Tool
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Development Timeline */}
+          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900/20 rounded-xl">
+            <h3 className="font-semibold mb-2 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-600" />
+              Development Timeline
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="font-medium text-gray-700 dark:text-gray-300">Phase 1 (Next 2 Months)</p>
+                <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
+                  <li>• Core Enhancements</li>
+                  <li>• Basic Color Tools</li>
+                  <li>• Simple Batch Processing</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium text-gray-700 dark:text-gray-300">Phase 2 (3-4 Months)</p>
+                <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
+                  <li>• Advanced Effects</li>
+                  <li>• Social Media Features</li>
+                  <li>• Workflow Improvements</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Info className="w-4 h-4" />
+              <span>Follow our development progress</span>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowComingSoon(false)}
+                className="border-2"
+              >
+                Close
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowComingSoon(false)
+                  setShowSubscriptionDialog(true)
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Bell className="w-4 h-4 mr-2" />
+                Get Updates
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add new Subscription Dialog */}
+      <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
+              <Bell className="w-5 h-5 text-blue-600" />
+              Stay Updated
+            </DialogTitle>
+            <DialogDescription>
+              Subscribe to receive updates about new features and improvements.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setSubscriptionStatus({ type: null, message: '' })
+                }}
+                className="mt-1"
+                disabled={isSubscribing}
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Interests</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="core"
+                    checked={selectedInterests.includes('core')}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedInterests([...selectedInterests, 'core'])
+                      } else {
+                        setSelectedInterests(selectedInterests.filter(i => i !== 'core'))
+                      }
+                    }}
+                    disabled={isSubscribing}
+                  />
+                  <Label htmlFor="core" className="text-sm">Core Features</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="effects"
+                    checked={selectedInterests.includes('effects')}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedInterests([...selectedInterests, 'effects'])
+                      } else {
+                        setSelectedInterests(selectedInterests.filter(i => i !== 'effects'))
+                      }
+                    }}
+                    disabled={isSubscribing}
+                  />
+                  <Label htmlFor="effects" className="text-sm">Effects & Filters</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="workflow"
+                    checked={selectedInterests.includes('workflow')}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedInterests([...selectedInterests, 'workflow'])
+                      } else {
+                        setSelectedInterests(selectedInterests.filter(i => i !== 'workflow'))
+                      }
+                    }}
+                    disabled={isSubscribing}
+                  />
+                  <Label htmlFor="workflow" className="text-sm">Workflow Tools</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="social"
+                    checked={selectedInterests.includes('social')}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedInterests([...selectedInterests, 'social'])
+                      } else {
+                        setSelectedInterests(selectedInterests.filter(i => i !== 'social'))
+                      }
+                    }}
+                    disabled={isSubscribing}
+                  />
+                  <Label htmlFor="social" className="text-sm">Social Features</Label>
+                </div>
+              </div>
+            </div>
+
+            {subscriptionStatus.type && (
+              <div className={`p-3 rounded-lg ${
+                subscriptionStatus.type === 'success' 
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+                  : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
+              }`}>
+                {subscriptionStatus.message}
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowSubscriptionDialog(false)
+                  setEmail('')
+                  setSelectedInterests([])
+                  setSubscriptionStatus({ type: null, message: '' })
+                }}
+                className="border-2"
+                disabled={isSubscribing}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubscribe}
+                disabled={isSubscribing || !email}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {isSubscribing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Subscribing...
+                  </>
+                ) : (
+                  <>
+                    <Bell className="w-4 h-4 mr-2" />
+                    Subscribe
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
