@@ -199,6 +199,8 @@ export default function FileConverter() {
     brightness: 0,
     contrast: 0,
     saturation: 0,
+    temperature: 0,
+    tint: 0,
     preserveMetadata: false,
     progressive: false,
     lossless: false
@@ -352,7 +354,13 @@ export default function FileConverter() {
   }
 
   const handleConvert = async (optimize: boolean = false) => {
-    if (!selectedFile || !detectedFormat || !toFormat) return
+    if (!selectedFile || !detectedFormat) return
+
+    // In optimize mode, use detectedFormat if toFormat is not set
+    const targetFormat = optimize ? (toFormat || detectedFormat) : toFormat
+
+    // If in convert mode and no toFormat, return
+    if (!optimize && !toFormat) return
 
     setIsConverting(true)
 
@@ -360,20 +368,34 @@ export default function FileConverter() {
       const formData = new FormData()
       formData.append('file', selectedFile)
       formData.append('fromFormat', detectedFormat)
-      formData.append('toFormat', toFormat)
+      formData.append('toFormat', targetFormat)
+      formData.append('optimize', optimize.toString())
       
+      // Always pass quality and other optimization parameters
+      formData.append('quality', imageOptions.quality.toString())
+      formData.append('progressive', imageOptions.progressive.toString())
+      formData.append('preserveMetadata', imageOptions.preserveMetadata.toString())
+      formData.append('lossless', imageOptions.lossless.toString())
+      
+      // Pass other image options
       Object.entries(imageOptions).forEach(([key, value]) => {
-        if (value !== undefined) {
+        if (value !== undefined && value !== null) {
           formData.append(key, value.toString())
         }
       })
+
+      // Pass social media platform if selected
+      if (socialMediaPlatform !== 'custom') {
+        formData.append('socialMediaPlatform', socialMediaPlatform)
+        formData.append('socialMediaType', socialMediaType)
+      }
 
       const result = await FileConverterService.convertFile(formData)
       
       if (result.success && result.data) {
         setConvertedFile(result.fileName)
         setConvertedFileData(result.data)
-        setConvertedFileType(toFormat)
+        setConvertedFileType(targetFormat)
         // Convert base64 to Uint8Array
         const binaryString = atob(result.data)
         const bytes = new Uint8Array(binaryString.length)
@@ -381,7 +403,7 @@ export default function FileConverter() {
           bytes[i] = binaryString.charCodeAt(i)
         }
         // Use the correct MIME type
-        const mimeType = `image/${toFormat === 'jpg' ? 'jpeg' : toFormat}`
+        const mimeType = `image/${targetFormat === 'jpg' ? 'jpeg' : targetFormat}`
         const blob = new Blob([bytes], { type: mimeType })
         const url = URL.createObjectURL(blob)
         const link = document.createElement("a")
@@ -402,27 +424,27 @@ export default function FileConverter() {
             ? ` (${(result.metadata.size / 1024 / 1024).toFixed(2)}MB)`
             : ''
           toast({
-            title: "Conversion successful!",
-            description: `Your image has been converted${compressionInfo}${sizeInfo}`,
+            title: optimize ? "Optimization successful!" : "Conversion successful!",
+            description: `Your image has been ${optimize ? 'optimized' : 'converted'}${compressionInfo}${sizeInfo}`,
             action: <ToastAction altText="Download">Download</ToastAction>,
           })
         }
 
-        trackEvent("conversion", { from: detectedFormat, to: toFormat })
+        trackEvent(optimize ? "optimization" : "conversion", { from: detectedFormat, to: targetFormat })
       } else {
         toast({
           variant: "destructive",
-          title: "Conversion failed",
-          description: result.error || 'An error occurred during conversion',
+          title: optimize ? "Optimization failed" : "Conversion failed",
+          description: result.error || `An error occurred during ${optimize ? 'optimization' : 'conversion'}`,
           action: <ToastAction altText="Try again">Try again</ToastAction>,
         })
       }
     } catch (error) {
-      console.error("Conversion failed:", error)
+      console.error(optimize ? "Optimization failed:" : "Conversion failed:", error)
       toast({
         variant: "destructive",
-        title: "Conversion failed",
-        description: "An error occurred during conversion. Please try again.",
+        title: optimize ? "Optimization failed" : "Conversion failed",
+        description: `An error occurred during ${optimize ? 'optimization' : 'conversion'}. Please try again.`,
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     } finally {
@@ -533,7 +555,14 @@ export default function FileConverter() {
         height: preset.height,
         quality: preset.quality,
         optimize: true,
-        progressive: true
+        progressive: true,
+        // Add platform-specific optimizations
+        sharpen: platform === 'instagram' ? 0.5 : 0.3, // Instagram needs slightly sharper images
+        contrast: platform === 'facebook' ? 5 : 3, // Facebook needs slightly more contrast
+        saturation: platform === 'twitter' ? 5 : 0, // Twitter images look better with more saturation
+        brightness: 0,
+        preserveMetadata: true, // Keep metadata for social media
+        lossless: false // Use lossy compression for better file size
       })
     }
   }
@@ -1498,7 +1527,12 @@ export default function FileConverter() {
                 {/* Convert Button */}
                 <Button
                   onClick={() => mode === 'convert' ? handleConvert() : handleConvert(true)}
-                  disabled={(!canConvert && mode === 'convert') || isConverting}
+                  disabled={
+                    isConverting ||
+                    !selectedFile ||
+                    !detectedFormat ||
+                    (mode === 'convert' && (!toFormat || detectedFormat === toFormat))
+                  }
                   className={`w-full h-12 transition-all duration-200 ${
                     isConverting
                       ? 'bg-blue-600/80'

@@ -18,7 +18,8 @@ const SHARP_FORMATS = {
   'jpeg': 'jpeg',
   'png': 'png',
   'webp': 'webp',
-  'avif': 'avif'
+  'avif': 'avif',
+  'svg': 'svg'
 } as const
 
 // Default quality settings
@@ -261,41 +262,136 @@ export async function convertFile(
         })
       }
 
-      // Apply quality settings
-      const qualityValue = quality !== undefined 
-        ? Math.min(Math.max(quality, 1), 100)
-        : DEFAULT_QUALITY[sharpFormat as keyof typeof DEFAULT_QUALITY]
-
       // Apply format-specific optimizations
-      switch (sharpFormat) {
-        case 'jpeg':
-          sharpInstance = sharpInstance.jpeg({ 
-            quality: qualityValue,
-            mozjpeg: optimize && !isPreviewMode,
-            progressive: progressive && !isPreviewMode
-          })
-          break
-        case 'png':
-          sharpInstance = sharpInstance.png({ 
-            quality: qualityValue,
-            compressionLevel: optimize && !isPreviewMode ? 9 : 6,
-            palette: lossless && !isPreviewMode
-          })
-          break
-        case 'webp':
-          sharpInstance = sharpInstance.webp({ 
-            quality: qualityValue,
-            effort: optimize && !isPreviewMode ? 6 : 4,
-            lossless: lossless && !isPreviewMode
-          })
-          break
-        case 'avif':
-          sharpInstance = sharpInstance.avif({ 
-            quality: qualityValue,
-            effort: optimize && !isPreviewMode ? 8 : 4,
-            lossless: lossless && !isPreviewMode
-          })
-          break
+      if (optimize) {
+        switch (targetFormat) {
+          case 'svg':
+            // For SVG, we'll just pass through the file as is
+            // since SVG is already a vector format and doesn't need optimization
+            sharpInstance = sharpInstance
+            break
+          case 'jpeg':
+            sharpInstance = sharpInstance.jpeg({
+              quality: quality || 80,
+              progressive: progressive || false,
+              chromaSubsampling: '4:4:4',
+              mozjpeg: true,
+              trellisQuantisation: true,
+              overshootDeringing: true,
+              optimizeScans: true,
+              // Social media specific optimizations
+              ...(formData.get('socialMediaPlatform') === 'instagram' && {
+                quality: 92,
+                chromaSubsampling: '4:4:4'
+              }),
+              ...(formData.get('socialMediaPlatform') === 'facebook' && {
+                quality: 85,
+                chromaSubsampling: '4:2:0'
+              }),
+              ...(formData.get('socialMediaPlatform') === 'twitter' && {
+                quality: 90,
+                chromaSubsampling: '4:2:0'
+              })
+            })
+            break
+          case 'png':
+            sharpInstance = sharpInstance.png({
+              compressionLevel: 9,
+              effort: 10,
+              palette: true,
+              colors: 256,
+              dither: 1.0,
+              progressive: progressive || false,
+              // Social media specific optimizations
+              ...(formData.get('socialMediaPlatform') === 'instagram' && {
+                compressionLevel: 8,
+                effort: 9
+              }),
+              ...(formData.get('socialMediaPlatform') === 'facebook' && {
+                compressionLevel: 7,
+                effort: 8
+              }),
+              ...(formData.get('socialMediaPlatform') === 'twitter' && {
+                compressionLevel: 8,
+                effort: 9
+              })
+            })
+            break
+          case 'webp':
+            sharpInstance = sharpInstance.webp({
+              quality: quality || 80,
+              lossless: lossless || false,
+              nearLossless: false,
+              smartSubsample: true,
+              effort: 6,
+              // Social media specific optimizations
+              ...(formData.get('socialMediaPlatform') === 'instagram' && {
+                quality: 90,
+                effort: 5
+              }),
+              ...(formData.get('socialMediaPlatform') === 'facebook' && {
+                quality: 85,
+                effort: 4
+              }),
+              ...(formData.get('socialMediaPlatform') === 'twitter' && {
+                quality: 88,
+                effort: 5
+              })
+            })
+            break
+          case 'avif':
+            sharpInstance = sharpInstance.avif({
+              quality: quality || 80,
+              lossless: lossless || false,
+              speed: 5,
+              chromaSubsampling: '4:2:0',
+              // Social media specific optimizations
+              ...(formData.get('socialMediaPlatform') === 'instagram' && {
+                quality: 90,
+                speed: 4
+              }),
+              ...(formData.get('socialMediaPlatform') === 'facebook' && {
+                quality: 85,
+                speed: 5
+              }),
+              ...(formData.get('socialMediaPlatform') === 'twitter' && {
+                quality: 88,
+                speed: 4
+              })
+            })
+            break
+        }
+      } else {
+        // Apply basic format settings even when optimize is false
+        switch (targetFormat) {
+          case 'svg':
+            // For SVG, we'll just pass through the file as is
+            sharpInstance = sharpInstance
+            break
+          case 'jpeg':
+            sharpInstance = sharpInstance.jpeg({
+              quality: quality || 80,
+              progressive: progressive || false
+            })
+            break
+          case 'png':
+            sharpInstance = sharpInstance.png({
+              progressive: progressive || false
+            })
+            break
+          case 'webp':
+            sharpInstance = sharpInstance.webp({
+              quality: quality || 80,
+              lossless: lossless || false
+            })
+            break
+          case 'avif':
+            sharpInstance = sharpInstance.avif({
+              quality: quality || 80,
+              lossless: lossless || false
+            })
+            break
+        }
       }
 
       // Process the image

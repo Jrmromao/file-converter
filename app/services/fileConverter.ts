@@ -1,4 +1,4 @@
-export const SUPPORTED_FORMATS = ['png', 'jpg', 'jpeg', 'webp', 'avif'] as const
+export const SUPPORTED_FORMATS = ['png', 'jpg', 'jpeg', 'webp', 'avif', 'svg'] as const
 
 export class FileConverterService {
   static getSupportedFormats() {
