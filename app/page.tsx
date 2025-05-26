@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Minimize2, X, Moon, Sun, Palette } from "lucide-react"
+import { Upload, FileText, Download, Loader2, ArrowRight, Zap, Shield, Layers, Image, Settings, RotateCw, FlipHorizontal, FlipVertical, Droplet, Sparkles, Info, Maximize2, Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -23,14 +23,11 @@ import {
 } from "@/components/ui/dialog"
 import { GoogleAd } from "./components/GoogleAd"
 
-
-// Helper for consistent styling of slider tracks and thumbs
-const sliderColorClass = (color: string) => `[&>span:first-child]:bg-${color}-500 dark:[&>span:first-child]:bg-${color}-600 [&>span:last-child>span]:bg-white dark:[&>span:last-child>span]:bg-neutral-200 [&>span:last-child>span]:border-${color}-500 dark:[&>span:last-child>span]:border-${color}-600`
-
+// Helper for consistent slider styling
+const sliderColorClass = (color: string) => `data-[state=checked]:bg-${color}-600 [&>span:first-child]:bg-${color}-500 dark:[&>span:first-child]:bg-${color}-600 [&>span:last-child>span]:bg-white dark:[&>span:last-child>span]:bg-neutral-200 [&>span:last-child>span]:border-${color}-500 dark:[&>span:last-child>span]:border-${color}-600`
 
 function DarkModeToggle() {
   useEffect(() => {
-    // Set initial mode based on system preference
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.classList.add('dark')
     }
@@ -43,7 +40,7 @@ function DarkModeToggle() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="absolute top-4 right-4 p-2 rounded-full bg-neutral-100/70 dark:bg-neutral-800/70 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 z-50 border border-neutral-200 dark:border-neutral-700"
+      className="fixed top-4 right-4 p-2 rounded-full bg-white/90 dark:bg-neutral-800/90 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 z-50"
       aria-label="Toggle dark mode"
     >
       <Sun className="w-5 h-5 text-yellow-500 dark:hidden" />
@@ -90,10 +87,6 @@ export default function FileConverter() {
     lossless: false
   })
 
-  // Add debounced preview update
-  const [previewTimeout, setPreviewTimeout] = useState<NodeJS.Timeout | null>(null)
-
-  // Cleanup preview URL when component unmounts
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -103,7 +96,6 @@ export default function FileConverter() {
   }, [previewUrl])
 
   const handleFileSelect = (file: File) => {
-    // Check if file is an image
     if (!file.type.startsWith('image/')) {
       toast({
         variant: "destructive",
@@ -117,14 +109,12 @@ export default function FileConverter() {
     setSelectedFile(file)
     setConvertedFile(null)
 
-    // Create preview URL
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl)
     }
     const url = URL.createObjectURL(file)
     setPreviewUrl(url)
 
-    // Get image metadata
     const img = new window.Image()
     img.onload = () => {
       setImageMetadata({
@@ -136,9 +126,7 @@ export default function FileConverter() {
     }
     img.src = url
 
-    // Auto-detect file format
     const extension = file.name.split(".").pop()?.toLowerCase() || ""
-    // Check if the format is supported
     if (SUPPORTED_FORMATS.includes(extension as any)) {
       setDetectedFormat(extension)
     } else {
@@ -190,7 +178,6 @@ export default function FileConverter() {
       formData.append('fromFormat', detectedFormat)
       formData.append('toFormat', toFormat)
       
-      // Add image options
       Object.entries(imageOptions).forEach(([key, value]) => {
         if (value !== undefined) {
           formData.append(key, value.toString())
@@ -201,7 +188,6 @@ export default function FileConverter() {
       
       if (result.success && result.data) {
         setConvertedFile(result.fileName)
-        // Create a download URL for the converted file
         const binaryString = atob(result.data)
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
@@ -215,7 +201,6 @@ export default function FileConverter() {
         link.click()
         URL.revokeObjectURL(url)
 
-        // Show success message with metadata
         if (result.metadata) {
           const compressionInfo = result.metadata.compressionRatio 
             ? ` (${result.metadata.compressionRatio.toFixed(1)}% smaller)`
@@ -230,15 +215,8 @@ export default function FileConverter() {
           })
         }
 
-        // Example for a download conversion
-        // gtag('event', 'conversion', {
-        //   'send_to': 'AW-CONVERSION_ID/label',
-        //   'event_category': 'engagement',
-        //   'event_label': 'image_download'
-        // });
         trackEvent("conversion", { from: detectedFormat, to: toFormat })
       } else {
-        // Show error message
         toast({
           variant: "destructive",
           title: "Conversion failed",
@@ -260,18 +238,10 @@ export default function FileConverter() {
   }
 
   const handleDownload = () => {
-    // Simulate file download
     const link = document.createElement("a")
     link.href = "#"
     link.download = convertedFile || "converted-file"
     link.click()
-
-    // Example for a download conversion
-    // gtag('event', 'conversion', {
-    //   'send_to': 'AW-CONVERSION_ID/label',
-    //   'event_category': 'engagement',
-    //   'event_label': 'image_download'
-    // });
   }
 
   const canConvert = selectedFile && detectedFormat && toFormat && detectedFormat !== toFormat
@@ -286,7 +256,6 @@ export default function FileConverter() {
       formData.append('toFormat', toFormat)
       formData.append('isPreview', 'true')
       
-      // Add image options
       Object.entries(imageOptions).forEach(([key, value]) => {
         if (value !== undefined) {
           formData.append(key, value.toString())
@@ -296,7 +265,6 @@ export default function FileConverter() {
       const result = await FileConverterService.convertFile(formData)
       
       if (result.success && result.data) {
-        // Create a preview URL for the converted file
         const binaryString = atob(result.data)
         const bytes = new Uint8Array(binaryString.length)
         for (let i = 0; i < binaryString.length; i++) {
@@ -304,7 +272,6 @@ export default function FileConverter() {
         }
         const blob = new Blob([bytes], { type: `image/${toFormat}` })
         
-        // Cleanup old preview URL before creating new one
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl)
         }
@@ -317,14 +284,11 @@ export default function FileConverter() {
     }
   }
 
-  // Debounce preview updates
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
-
     if (selectedFile && detectedFormat && toFormat) {
       timeoutId = setTimeout(updatePreview, 300)
     }
-
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId)
@@ -332,7 +296,6 @@ export default function FileConverter() {
     }
   }, [imageOptions, selectedFile, detectedFormat, toFormat])
 
-  // --- Google Analytics event helper ---
   const trackEvent = (action: string, params: Record<string, any> = {}) => {
     if (typeof window !== "undefined" && (window as any).gtag) {
       (window as any).gtag("event", action, params)
@@ -340,60 +303,41 @@ export default function FileConverter() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900 p-4 font-sans antialiased">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 font-sans">
       <DarkModeToggle />
-      {/* --- Logo & Brand --- */}
-      <div className="w-full flex items-center pl-2 mt-4 mb-8">
-        <div className="w-35 h-25 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg mr-2">
-          PNG
+      
+      {/* Header */}
+      <header className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg">
+            PNG
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight"></h1>
         </div>
-        <span className="text-xl font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">PNG Convert</span>
-      </div>
-
-      {/* --- Top Leaderboard Ad Slot (Responsive, Recommended size: 728x90) --- */}
-      <div className="w-full flex justify-center mb-8">
-          <GoogleAd
-            adClient="ca-pub-1009479093659621"
-            adSlot="8774727539"
-            style={{ 
-              display: "block", 
-              width: "100%", 
-              maxWidth: "90px", 
-              minHeight: 90,
-              borderRadius: "0.75rem",
-              overflow: "hidden"
-            }}
-            className="rounded-xl"
-          />
-      </div>
-
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10 pt-4">
-          <h1 className="text-5xl font-extrabold text-slate-900 dark:text-neutral-50 mb-4 leading-tight">Your Ultimate Image Converter</h1>
-          <p className="text-xl text-slate-700 dark:text-neutral-400 max-w-3xl mx-auto">
-            Effortlessly convert, resize, and optimize your images with powerful advanced features. Supports PNG, JPG, WebP, AVIF, and more.
+        <div className="text-center">
+          <h2 className="text-4xl font-extrabold mb-4">Convert & Optimize Images</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Transform your images with ease. Convert between PNG, JPG, WebP, AVIF, and more with advanced editing tools.
           </p>
         </div>
+      </header>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Main Converter */}
-          <div className="lg:col-span-3">
-            <Card className="shadow-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-2xl p-6">
-              <CardHeader className="pb-8">
-                <CardTitle className="text-3xl font-bold text-center text-slate-800 dark:text-neutral-100">Convert Your Images</CardTitle>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Converter Section */}
+          <div className="lg:col-span-2">
+            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold">Image Converter</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-8">
-                {/* File Upload Area */}
+              <CardContent className="space-y-6">
+                {/* File Upload */}
                 <div
-                  className={`relative border-2 border-dashed rounded-xl p-10 text-center transition-all duration-300 ease-in-out cursor-pointer group
-                    ${isDragOver
-                      ? "border-blue-500 bg-blue-50 dark:bg-neutral-800/50"
-                      : selectedFile
-                        ? "border-emerald-500 bg-emerald-50 dark:bg-neutral-800/50"
-                        : "border-neutral-300 dark:border-neutral-700 hover:border-blue-400 hover:bg-neutral-50 dark:hover:bg-neutral-800"
-                    }
-                  `}
+                  className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
+                    ${isDragOver ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 
+                      selectedFile ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : 
+                      'border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -406,24 +350,19 @@ export default function FileConverter() {
                     onChange={handleFileInput}
                     accept="image/png,image/jpeg,image/jpg,image/webp,image/avif"
                   />
-
                   {selectedFile ? (
                     <div className="space-y-4">
                       {previewUrl && (
-                        <div className="relative max-h-64 flex justify-center items-center rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 p-2 border border-neutral-200 dark:border-neutral-700">
+                        <div className="relative max-h-64 overflow-hidden rounded-lg">
                           <img
                             src={previewUrl}
                             alt="Preview"
-                            className="object-contain max-h-60 rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setShowPreview(true)
-                            }}
+                            className="object-contain max-h-60 w-full rounded-lg"
                           />
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="absolute top-3 right-3 bg-white/70 dark:bg-neutral-700/70 hover:bg-white dark:hover:bg-neutral-600 text-neutral-700 dark:text-neutral-100 rounded-full shadow-md transition-transform duration-200 hover:scale-110"
+                            className="absolute top-2 right-2 bg-white/80 dark:bg-gray-800/80 rounded-full"
                             onClick={(e) => {
                               e.stopPropagation()
                               setShowPreview(true)
@@ -434,19 +373,16 @@ export default function FileConverter() {
                         </div>
                       )}
                       <div>
-                        <p className="font-semibold text-lg text-slate-800 dark:text-neutral-100 truncate">{selectedFile.name}</p>
-                        <p className="text-sm text-slate-500 dark:text-neutral-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p className="font-medium text-lg truncate">{selectedFile.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                         {detectedFormat && (
-                          <Badge variant="secondary" className="mt-3 text-base px-3 py-1 bg-blue-600 text-white dark:bg-blue-800 dark:text-blue-200 shadow-sm">
-                            {detectedFormat.toUpperCase()}
-                          </Badge>
+                          <Badge className="mt-2 bg-blue-600 dark:bg-blue-700">{detectedFormat.toUpperCase()}</Badge>
                         )}
                         {imageMetadata && (
-                          <div className="mt-3 flex items-center justify-center gap-2">
+                          <div className="mt-2 flex justify-center gap-2">
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-neutral-500 dark:text-neutral-300 hover:text-neutral-700 dark:hover:text-neutral-100"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 setShowMetadata(!showMetadata)
@@ -456,38 +392,32 @@ export default function FileConverter() {
                               {showMetadata ? 'Hide Details' : 'Show Details'}
                             </Button>
                             {showMetadata && (
-                              <div className="text-sm text-slate-600 dark:text-neutral-300">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">
                                 {imageMetadata.width} × {imageMetadata.height}px
-                              </div>
+                              </span>
                             )}
                           </div>
                         )}
                       </div>
-                      <Badge variant="secondary" className="bg-emerald-600 text-white dark:bg-emerald-800 dark:text-emerald-200 text-base px-3 py-1 shadow-sm">
-                        Image Selected
-                      </Badge>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <Upload className="w-16 h-16 text-blue-500 dark:text-blue-400 mx-auto transition-transform duration-300 group-hover:scale-110" />
-                      <div>
-                        <p className="text-xl font-semibold text-slate-700 dark:text-neutral-100">Drop your image here or click to browse</p>
-                        <p className="text-md text-slate-500 dark:text-neutral-400 mt-2">Supports PNG, JPG, WebP, and AVIF formats</p>
-                      </div>
+                    <div className="space-y-3">
+                      <Upload className="w-12 h-12 text-blue-500 dark:text-blue-400 mx-auto" />
+                      <p className="text-lg font-medium">Drop or click to upload image</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">PNG, JPG, WebP, AVIF supported</p>
                     </div>
                   )}
                 </div>
 
                 {/* Preview Dialog */}
                 <Dialog open={showPreview} onOpenChange={setShowPreview}>
-                  <DialogContent className="max-w-4xl dark:bg-neutral-900 dark:text-neutral-100 p-6 rounded-xl border border-neutral-800">
+                  <DialogContent className="max-w-4xl bg-white dark:bg-gray-800">
                     <DialogHeader>
-                      <div className="flex items-center justify-between w-full">
-                        <DialogTitle className="font-bold text-xl text-slate-800 dark:text-neutral-100">Image Preview</DialogTitle>
+                      <div className="flex justify-between items-center">
+                        <DialogTitle>Image Preview</DialogTitle>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="bg-neutral-100 dark:bg-neutral-700 dark:text-neutral-100 dark:border-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                           onClick={() => {
                             const link = document.createElement("a")
                             link.href = previewUrl || ""
@@ -499,61 +429,55 @@ export default function FileConverter() {
                           Download
                         </Button>
                       </div>
-                      <DialogDescription className="dark:text-neutral-400 text-sm mt-1">
+                      <DialogDescription>
                         {imageMetadata?.width} × {imageMetadata?.height}px • {((selectedFile?.size || 0) / 1024 / 1024).toFixed(2)} MB
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="relative mt-5 max-h-[70vh] overflow-auto flex items-center justify-center">
+                    <div className="mt-4 max-h-[70vh] overflow-auto">
                       <img
                         src={previewUrl || ""}
                         alt="Preview"
-                        className="w-auto h-auto max-w-full max-h-[65vh] object-contain rounded-lg shadow-xl"
+                        className="max-w-full max-h-[65vh] object-contain rounded-lg"
                       />
                     </div>
                   </DialogContent>
                 </Dialog>
 
                 {/* Format Selection */}
-                <div className="space-y-3">
-                  <label className="text-lg font-medium text-slate-700 dark:text-neutral-300">Convert to</label>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Convert to</Label>
                   <Select value={toFormat} onValueChange={setToFormat}>
-                    <SelectTrigger className="h-14 text-base bg-neutral-50 border border-neutral-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-600 transition-colors">
-                      <SelectValue placeholder="Select target format" />
+                    <SelectTrigger className="h-12 bg-white dark:bg-gray-700">
+                      <SelectValue placeholder="Select format" />
                     </SelectTrigger>
-                    <SelectContent className="dark:bg-neutral-800 dark:text-neutral-100 border border-neutral-700">
+                    <SelectContent className="bg-white dark:bg-gray-700">
                       {fileFormats
                         .filter((format: FileFormat) => format.value !== detectedFormat)
                         .map((format: FileFormat) => (
-                          <SelectItem key={format.value} value={format.value} className="dark:text-neutral-100 hover:bg-neutral-700 focus:bg-neutral-700">
-                            <div className="flex items-center gap-3">
-                               {/* Removed individual format icons here */}
-                              <span className="text-base">{format.label}</span>
-                            </div>
+                          <SelectItem key={format.value} value={format.value}>
+                            {format.label}
                           </SelectItem>
                         ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                {/* Advanced Options Toggle */}
-                <div className="flex items-center justify-between">
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 px-0"
-                    onClick={() => setShowAdvanced(!showAdvanced)}
-                  >
-                    <Settings className="w-5 h-5" />
-                    <span className="text-md font-semibold">{showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}</span>
-                  </Button>
-                </div>
-
                 {/* Advanced Options */}
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 text-blue-600 dark:text-blue-400"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                >
+                  <Settings className="w-4 h-4" />
+                  {showAdvanced ? 'Hide Advanced Options' : 'Show Advanced Options'}
+                </Button>
+
                 {showAdvanced && (
-                  <div className="space-y-7 p-6 bg-white dark:bg-neutral-850 rounded-xl shadow-inner border border-neutral-200 dark:border-neutral-700">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Quality Slider */}
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-neutral-300 text-sm">Quality: {imageOptions.quality}%</Label>
+                  <div className="space-y-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                    {/* Quality and Rotation */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm">Quality: {imageOptions.quality}%</Label>
                         <Slider
                           value={[imageOptions.quality]}
                           onValueChange={(value) => setImageOptions({ ...imageOptions, quality: value[0] })}
@@ -563,10 +487,8 @@ export default function FileConverter() {
                           className={sliderColorClass('blue')}
                         />
                       </div>
-
-                      {/* Rotation Slider */}
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-neutral-300 text-sm">Rotation: {imageOptions.rotate}°</Label>
+                      <div>
+                        <Label className="text-sm">Rotation: {imageOptions.rotate}°</Label>
                         <Slider
                           value={[imageOptions.rotate]}
                           onValueChange={(value) => setImageOptions({ ...imageOptions, rotate: value[0] })}
@@ -578,13 +500,13 @@ export default function FileConverter() {
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {/* Width Input */}
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-neutral-300 text-sm">Width (px)</Label>
+                    {/* Dimensions */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm">Width (px)</Label>
                         <input
                           type="number"
-                          className="w-full p-3 border border-neutral-300 dark:border-neutral-600 rounded-md bg-neutral-50 dark:bg-neutral-700 text-slate-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
                           value={imageOptions.width || ''}
                           onChange={(e) => setImageOptions({ ...imageOptions, width: e.target.value ? parseInt(e.target.value) : undefined })}
                           placeholder="Original width"
@@ -592,13 +514,11 @@ export default function FileConverter() {
                           max={8000}
                         />
                       </div>
-
-                      {/* Height Input */}
-                      <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-neutral-300 text-sm">Height (px)</Label>
+                      <div>
+                        <Label className="text-sm">Height (px)</Label>
                         <input
                           type="number"
-                          className="w-full p-3 border border-neutral-300 dark:border-neutral-600 rounded-md bg-neutral-50 dark:bg-neutral-700 text-slate-800 dark:text-neutral-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
                           value={imageOptions.height || ''}
                           onChange={(e) => setImageOptions({ ...imageOptions, height: e.target.value ? parseInt(e.target.value) : undefined })}
                           placeholder="Original height"
@@ -609,11 +529,11 @@ export default function FileConverter() {
                     </div>
 
                     {/* Color Adjustments */}
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Color Adjustments</h3>
-                      <div className="grid md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-neutral-300 text-sm">Brightness: {imageOptions.brightness}%</Label>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Color Adjustments</h3>
+                      <div className="grid sm:grid-cols-3 gap-4">
+                        <div>
+                          <Label className="text-sm">Brightness: {imageOptions.brightness}%</Label>
                           <Slider
                             value={[imageOptions.brightness]}
                             onValueChange={(value) => setImageOptions({ ...imageOptions, brightness: value[0] })}
@@ -623,8 +543,8 @@ export default function FileConverter() {
                             className={sliderColorClass('purple')}
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-neutral-300 text-sm">Contrast: {imageOptions.contrast}%</Label>
+                        <div>
+                          <Label className="text-sm">Contrast: {imageOptions.contrast}%</Label>
                           <Slider
                             value={[imageOptions.contrast]}
                             onValueChange={(value) => setImageOptions({ ...imageOptions, contrast: value[0] })}
@@ -634,8 +554,8 @@ export default function FileConverter() {
                             className={sliderColorClass('purple')}
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-neutral-300 text-sm">Saturation: {imageOptions.saturation}%</Label>
+                        <div>
+                          <Label className="text-sm">Saturation: {imageOptions.saturation}%</Label>
                           <Slider
                             value={[imageOptions.saturation]}
                             onValueChange={(value) => setImageOptions({ ...imageOptions, saturation: value[0] })}
@@ -649,20 +569,16 @@ export default function FileConverter() {
                     </div>
 
                     {/* Filters */}
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Filters</h3>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                        {Object.entries(FILTERS).map(([key, value]) => (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Filters</h3>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        {Object.entries(FILTERS).map(([key]) => (
                           <Button
                             key={key}
                             variant={imageOptions.filter === key ? "default" : "outline"}
                             size="sm"
                             onClick={() => setImageOptions({ ...imageOptions, filter: key as keyof typeof FILTERS })}
-                            className={`w-full text-sm py-2 px-3 transition-colors duration-200
-                              ${imageOptions.filter === key
-                                ? 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 text-white shadow-md'
-                                : 'border-neutral-300 text-slate-700 dark:border-neutral-600 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-750 hover:bg-neutral-200 dark:hover:bg-neutral-600'
-                              }`}
+                            className={imageOptions.filter === key ? 'bg-blue-600 dark:bg-blue-700' : ''}
                           >
                             {key.charAt(0).toUpperCase() + key.slice(1)}
                           </Button>
@@ -671,19 +587,15 @@ export default function FileConverter() {
                     </div>
 
                     {/* Effects */}
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Effects & Optimizations</h3>
-                      <div className="grid md:grid-cols-3 gap-6">
-                        <div className="flex flex-col gap-3">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Effects & Optimizations</h3>
+                      <div className="grid sm:grid-cols-3 gap-4">
+                        <div className="space-y-2">
                           <Button
                             variant={imageOptions.grayscale ? "default" : "outline"}
                             size="sm"
                             onClick={() => setImageOptions({ ...imageOptions, grayscale: !imageOptions.grayscale })}
-                            className={`w-full transition-colors duration-200
-                              ${imageOptions.grayscale
-                                ? 'bg-rose-600 hover:bg-rose-700 dark:bg-rose-700 dark:hover:bg-rose-800 text-white shadow-md'
-                                : 'border-neutral-300 text-slate-700 dark:border-neutral-600 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-750 hover:bg-neutral-200 dark:hover:bg-neutral-600'
-                              }`}
+                            className={imageOptions.grayscale ? 'bg-blue-600 dark:bg-blue-700' : ''}
                           >
                             <Droplet className="w-4 h-4 mr-2" />
                             Grayscale
@@ -692,18 +604,14 @@ export default function FileConverter() {
                             variant={imageOptions.optimize ? "default" : "outline"}
                             size="sm"
                             onClick={() => setImageOptions({ ...imageOptions, optimize: !imageOptions.optimize })}
-                            className={`w-full transition-colors duration-200
-                              ${imageOptions.optimize
-                                ? 'bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white shadow-md'
-                                : 'border-neutral-300 text-slate-700 dark:border-neutral-600 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-750 hover:bg-neutral-200 dark:hover:bg-neutral-600'
-                              }`}
+                            className={imageOptions.optimize ? 'bg-blue-600 dark:bg-blue-700' : ''}
                           >
                             <Sparkles className="w-4 h-4 mr-2" />
                             Optimize
                           </Button>
                         </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-neutral-300 text-sm">Blur: {imageOptions.blur.toFixed(1)}</Label>
+                        <div>
+                          <Label className="text-sm">Blur: {imageOptions.blur.toFixed(1)}</Label>
                           <Slider
                             value={[imageOptions.blur]}
                             onValueChange={(value) => setImageOptions({ ...imageOptions, blur: value[0] })}
@@ -713,8 +621,8 @@ export default function FileConverter() {
                             className={sliderColorClass('teal')}
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 dark:text-neutral-300 text-sm">Sharpen: {imageOptions.sharpen.toFixed(1)}</Label>
+                        <div>
+                          <Label className="text-sm">Sharpen: {imageOptions.sharpen.toFixed(1)}</Label>
                           <Slider
                             value={[imageOptions.sharpen]}
                             onValueChange={(value) => setImageOptions({ ...imageOptions, sharpen: value[0] })}
@@ -727,36 +635,33 @@ export default function FileConverter() {
                       </div>
                     </div>
 
-                    {/* Format Specific Options */}
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Format Specific Options</h3>
-                      <div className="grid md:grid-cols-3 gap-6">
-                        <div className="flex items-center space-x-2">
+                    {/* Format Options */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Format Options</h3>
+                      <div className="grid sm:grid-cols-3 gap-4">
+                        <div className="flex items-center gap-2">
                           <Switch
                             id="preserve-metadata"
                             checked={imageOptions.preserveMetadata}
                             onCheckedChange={(checked) => setImageOptions({ ...imageOptions, preserveMetadata: checked })}
-                            className="data-[state=checked]:bg-emerald-600 dark:data-[state=checked]:bg-emerald-700"
                           />
-                          <Label htmlFor="preserve-metadata" className="text-slate-700 dark:text-neutral-300">Preserve Metadata</Label>
+                          <Label htmlFor="preserve-metadata">Preserve Metadata</Label>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <Switch
                             id="progressive"
                             checked={imageOptions.progressive}
                             onCheckedChange={(checked) => setImageOptions({ ...imageOptions, progressive: checked })}
-                            className="data-[state=checked]:bg-emerald-600 dark:data-[state=checked]:bg-emerald-700"
                           />
-                          <Label htmlFor="progressive" className="text-slate-700 dark:text-neutral-300">Progressive Loading</Label>
+                          <Label htmlFor="progressive">Progressive Loading</Label>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <Switch
                             id="lossless"
                             checked={imageOptions.lossless}
                             onCheckedChange={(checked) => setImageOptions({ ...imageOptions, lossless: checked })}
-                            className="data-[state=checked]:bg-emerald-600 dark:data-[state=checked]:bg-emerald-700"
                           />
-                          <Label htmlFor="lossless" className="text-slate-700 dark:text-neutral-300">Lossless Compression</Label>
+                          <Label htmlFor="lossless">Lossless Compression</Label>
                         </div>
                       </div>
                     </div>
@@ -767,139 +672,92 @@ export default function FileConverter() {
                 <Button
                   onClick={handleConvert}
                   disabled={!canConvert || isConverting}
-                  className="w-full h-16 text-xl font-bold bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-xl hover:shadow-2xl text-white dark:from-blue-800 dark:to-indigo-900 dark:hover:from-blue-900 dark:hover:to-indigo-950 rounded-lg"
+                  className="w-full h-12 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
                 >
                   {isConverting ? (
                     <>
-                      <Loader2 className="w-6 h-6 mr-3 animate-spin" />
-                      Processing Image...
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Converting...
                     </>
                   ) : (
                     <>
-                      Convert & Optimize
-                      <ArrowRight className="w-6 h-6 ml-3" />
+                      Convert Image
+                      <ArrowRight className="w-5 h-5 ml-2" />
                     </>
                   )}
                 </Button>
 
                 {/* Conversion Result */}
                 {convertedFile && (
-                  <Card className="bg-gradient-to-r from-emerald-100 to-green-100 border border-emerald-300 dark:from-emerald-950/60 dark:to-green-950/60 dark:border-emerald-800 rounded-xl shadow-lg">
-                    <CardContent className="p-6 flex items-center justify-between flex-wrap gap-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-emerald-200 rounded-full flex items-center justify-center dark:bg-emerald-800/80">
-                          <Download className="w-6 h-6 text-emerald-700 dark:text-emerald-300" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-lg text-emerald-800 dark:text-emerald-200">Conversion Complete!</p>
-                          <p className="text-sm text-emerald-600 dark:text-emerald-300">{convertedFile}</p>
-                        </div>
+                  <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Download className="w-6 h-6 text-green-600 dark:text-green-400" />
+                      <div>
+                        <p className="font-medium">Conversion Complete!</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
                       </div>
-                      <Button onClick={handleDownload} className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white font-semibold py-2 px-5 rounded-md shadow-md">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download Now
-                      </Button>
-                    </CardContent>
-                  </Card>
+                    </div>
+                    <Button onClick={handleDownload} className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
                 )}
-
-                {/* --- In-Content Ad Slot (Responsive, Recommended size: 336x280 or 300x250) --- */}
-                {/* This ad unit will appear below the conversion result or the main converter card */}
-                <GoogleAd
-            adClient="ca-pub-1009479093659621"
-            adSlot="8774727539"
-            style={{ 
-              display: "block", 
-              width: "100%", 
-              maxWidth: "336px", 
-              minHeight: 280,
-              maxHeight: 280,
-              borderRadius: "0.75rem",
-              overflow: "hidden"
-            }}
-            className="rounded-xl"
-          />
-          
-
               </CardContent>
             </Card>
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Features Card */}
-            <Card className="shadow-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-2xl p-6">
-              <CardHeader className="pb-6">
-                <CardTitle className="text-2xl font-bold text-slate-800 dark:text-neutral-100">Key Features</CardTitle>
+          <div className="space-y-6">
+            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold">Features</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center dark:bg-blue-900/40">
-                    <Zap className="w-5 h-5 text-blue-600 dark:text-blue-300" />
-                  </div>
+              <CardContent className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <Zap className="w-6 h-6 text-blue-500 dark:text-blue-400" />
                   <div>
-                    <p className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Blazing Fast Conversion</p>
-                    <p className="text-sm text-slate-500 dark:text-neutral-400">Convert images in mere seconds with our optimized engine.</p>
+                    <p className="font-medium">Fast Conversion</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Convert images in seconds.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center dark:bg-emerald-900/40">
-                    <Shield className="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
-                  </div>
+                <div className="flex items-start gap-3">
+                  <Shield className="w-6 h-6 text-green-500 dark:text-green-400" />
                   <div>
-                    <p className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Ultimate Data Privacy</p>
-                    <p className="text-sm text-slate-500 dark:text-neutral-400">Your files are processed temporarily and never stored. Complete confidentiality.</p>
+                    <p className="font-medium">Secure Processing</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Files are processed securely and not stored.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center dark:bg-purple-900/40">
-                    <Layers className="w-5 h-5 text-purple-600 dark:text-purple-300" />
-                  </div>
+                <div className="flex items-start gap-3">
+                  <Layers className="w-6 h-6 text-purple-500 dark:text-purple-400" />
                   <div>
-                    <p className="font-semibold text-slate-700 dark:text-neutral-100 text-lg">Advanced Image Toolkit</p>
-                    <p className="text-sm text-slate-500 dark:text-neutral-400">Access powerful features like resizing, rotation, quality control, and artistic filters.</p>
+                    <p className="font-medium">Advanced Tools</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Resize, rotate, and apply filters.</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            {/* --- Sidebar Ad Slot (Responsive, Recommended size: 300x250 or 300x600) --- */}
-            <div className="w-full flex justify-center">
-              <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl w-full max-w-xs h-60 flex items-center justify-center text-neutral-500 dark:text-neutral-500 text-sm font-medium border border-neutral-200 dark:border-neutral-700">
-                {/* Replace this with your actual Google AdSense responsive ad code */}
-                <GoogleAd
-            adClient="ca-pub-1009479093659621"
-            adSlot="8774727539"
-            style={{ 
-              display: "block", 
-              width: "100%", 
-              maxWidth: "600px", 
-              minHeight: 300,
-              borderRadius: "0.75rem",
-              overflow: "hidden"
-            }}
-            className="rounded-xl"
-          />
-              </div>
-            </div>
-
-  
+            <GoogleAd
+              adClient="ca-pub-1009479093659621"
+              adSlot="8774727539"
+              style={{ display: "block", width: "100%", maxWidth: "300px", minHeight: "250px", borderRadius: "0.75rem", overflow: "hidden" }}
+              className="rounded-xl"
+            />
           </div>
         </div>
+      </main>
 
-        {/* Footer */}
-        <footer className="text-center mt-16 pt-8 pb-8 text-slate-600 dark:text-neutral-500 border-t border-neutral-200 dark:border-neutral-800">
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-5 text-md font-medium">
-            <a href="/privacy-policy" className="hover:underline text-blue-700 dark:text-blue-400">Privacy Policy</a>
-            <a href="/terms-of-service" className="hover:underline text-blue-700 dark:text-blue-400">Terms of Service</a>
-            <a href="/contact" className="hover:underline text-blue-700 dark:text-blue-400">Contact Us</a>
-            <a href="/about" className="hover:underline text-blue-700 dark:text-blue-400">About</a>
-            <a href="/faq" className="hover:underline text-blue-700 dark:text-blue-400">FAQ</a>
-          </div>
-          <p className="text-sm">
-            © {new Date().getFullYear()} PNG Convert. Convert images with confidence.
-          </p>
-        </footer>
-      </div>
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-4 py-8 border-t border-gray-200 dark:border-gray-700 text-center text-gray-600 dark:text-gray-400">
+        <div className="flex justify-center gap-6 mb-4">
+          <a href="/privacy-policy" className="hover:text-blue-600 dark:hover:text-blue-400">Privacy Policy</a>
+          <a href="/terms-of-service" className="hover:text-blue-600 dark:hover:text-blue-400">Terms of Service</a>
+          <a href="/contact" className="hover:text-blue-600 dark:hover:text-blue-400">Contact Us</a>
+          <a href="/about" className="hover:text-blue-600 dark:hover:text-blue-400">About</a>
+          <a href="/faq" className="hover:text-blue-600 dark:hover:text-blue-400">FAQ</a>
+        </div>
+        <p>© {new Date().getFullYear()} Image Converter. All rights reserved.</p>
+      </footer>
     </div>
   )
 }
