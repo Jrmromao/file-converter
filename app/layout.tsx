@@ -105,7 +105,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="google-site-verification" content="YOUR-GOOGLE-VERIFICATION-CODE" />
+        <meta name="google-adsense-account" content="ca-pub-1009479093659621"></meta>
         <AdSense pId="ca-pub-1009479093659621" />
       </head>
       <body className={inter.className}>
