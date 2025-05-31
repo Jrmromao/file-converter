@@ -27,7 +27,7 @@ import { motion } from "framer-motion"
 import { subscribeToUpdates } from './actions/subscribe'
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { GoogleAd } from './components/GoogleAd'
+// import { GoogleAd } from './components/GoogleAd'
 
 // Helper for consistent slider styling
 const sliderColorClass = (color: string, darkColor?: string) =>
@@ -656,7 +656,7 @@ export default function FileConverter() {
 
   return (
     <>
-      <GoogleAd adClient="ca-pub-1009479093659621" adSlot="1234567890" style={{ display: 'block', minHeight: 100, margin: '24px auto', maxWidth: 728 }} />
+      {/* <GoogleAd adClient="ca-pub-1009479093659621" adSlot="1234567890" style={{ display: 'block', minHeight: 100, margin: '24px auto', maxWidth: 728 }} /> */}
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 font-sans">
         <Head>
           <title>Image Converter & Optimizer | Convert, Resize & Optimize for Social Media</title>
@@ -769,14 +769,14 @@ export default function FileConverter() {
         </motion.section>
 
         {/* Top Banner Ad (below hero, centered, subtle margin) */}
-        <div className="flex justify-center mt-4 mb-8">
+        {/* <div className="flex justify-center mt-4 mb-8">
           <GoogleAdClient
             adClient="ca-pub-1009479093659621"
             adSlot="8774727539"
             format="auto"
             responsive={true}
           />
-        </div>
+        </div> */}
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 pb-16">
@@ -1599,7 +1599,7 @@ export default function FileConverter() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="sticky top-24 mb-4"
               >
-                <div className="w-[300px] mx-auto mb-4">
+                {/* <div className="w-[300px] mx-auto mb-4">
                   <GoogleAdClient
                     adClient="ca-pub-1009479093659621"
                     adSlot="8774727539"
@@ -1607,7 +1607,7 @@ export default function FileConverter() {
                     className="rounded-xl"
                     format="rectangle"
                   />
-                </div>
+                </div> */}
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, x: 40 }}
@@ -1673,7 +1673,7 @@ export default function FileConverter() {
                 </Card>
               </motion.div>
 
-              <div className="w-[300px] mx-auto mb-4">
+              {/* <div className="w-[300px] mx-auto mb-4">
                   <GoogleAdClient
                     adClient="ca-pub-1009479093659621"
                     adSlot="8774727539"
@@ -1681,7 +1681,7 @@ export default function FileConverter() {
                     className="rounded-xl"
                     format="rectangle"
                   />
-                </div>
+                </div> */}
             </div>
           </div>
         </main>
