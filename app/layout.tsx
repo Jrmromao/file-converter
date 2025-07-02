@@ -6,6 +6,10 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { Image, FileImage, Palette, Film } from "lucide-react"
 import type { ReactNode } from 'react'
 import AdSense from './components/AdSense'
+import Link from 'next/link'
+import { Sun, Moon, Github } from 'lucide-react'
+import TopNavbar from './components/TopNavbar'
+import Footer from './components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -109,7 +113,9 @@ export default function RootLayout({
         <AdSense pId="ca-pub-1009479093659621" />
       </head>
       <body className={inter.className}>
+        <TopNavbar />
         {children}
+        <Footer />
         <GoogleAnalytics gaId="G-313BF1QH73" />
         <Toaster />
       </body>

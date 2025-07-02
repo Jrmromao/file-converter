@@ -77,7 +77,7 @@ export default function About() {
         </div>
 
         <p className="mt-8 text-center text-slate-600 dark:text-neutral-300">
-          Thank you for choosing Image Converter Pro!
+          Thank you for choosing PNG Convert!
         </p>
       </div>
     </div>
