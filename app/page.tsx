@@ -701,10 +701,10 @@ export default function FileConverter() {
 
   return (
     <>
-      <Head>
-        <title>Image Converter & Optimizer | Convert, Resize & Optimize for Social Media</title>
-        <meta name="description" content="Free online image converter and optimizer. Convert between PNG, JPG, WebP, AVIF formats. Optimize images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest. Resize, compress, and enhance your images with advanced editing tools." />
-        <meta name="keywords" content="image converter, image optimizer, social media image optimizer, Instagram image converter, Facebook image optimizer, Twitter image resizer, LinkedIn image converter, Pinterest image optimizer, WebP converter, AVIF converter, image compression, image resizing, photo editor" />
+        <Head>
+          <title>Image Converter & Optimizer | Convert, Resize & Optimize for Social Media</title>
+          <meta name="description" content="Free online image converter and optimizer. Convert between PNG, JPG, WebP, AVIF formats. Optimize images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest. Resize, compress, and enhance your images with advanced editing tools." />
+          <meta name="keywords" content="image converter, image optimizer, social media image optimizer, Instagram image converter, Facebook image optimizer, Twitter image resizer, LinkedIn image converter, Pinterest image optimizer, WebP converter, AVIF converter, image compression, image resizing, photo editor" />
         {/* Open Graph & Twitter Card */}
         <meta property="og:title" content="Image Converter & Optimizer | Convert, Resize & Optimize for Social Media" />
         <meta property="og:description" content="Free online image converter and optimizer. Convert between PNG, JPG, WebP, AVIF formats. Optimize images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest." />
@@ -715,13 +715,13 @@ export default function FileConverter() {
         <meta name="twitter:title" content="Image Converter & Optimizer | Convert, Resize & Optimize for Social Media" />
         <meta name="twitter:description" content="Free online image converter and optimizer. Convert between PNG, JPG, WebP, AVIF formats. Optimize images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest." />
         <meta name="twitter:image" content="/twitter-image.png" />
-      </Head>
+        </Head>
       <div className="relative min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 font-sans overflow-x-hidden">
         {/* SVG Pattern Background */}
         <HeroPattern />
         <main className="relative z-10">
-          {/* Hero Section */}
-          <motion.section
+        {/* Hero Section */}
+        <motion.section
             aria-label="Hero"
             className="max-w-7xl mx-auto px-4 py-16 md:py-24 relative overflow-hidden flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20 min-h-[60vh]"
             initial="hidden"
@@ -752,31 +752,31 @@ export default function FileConverter() {
                   Transform your images for Instagram, Facebook, Twitter, LinkedIn, and Pinterest. Perfect for posts, stories, and profiles.
                 </p>
                 <p className="text-lg text-blue-700 dark:text-blue-300 mb-10 font-semibold">No sign-up required. 100% privacy. Start converting in seconds!</p>
-                <div className="flex justify-center md:justify-start gap-4 mt-8">
-                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                    <Instagram className="w-5 h-5 text-pink-500" />
-                    <span className="text-sm">Instagram</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                    <Facebook className="w-5 h-5 text-blue-600" />
-                    <span className="text-sm">Facebook</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                    <Twitter className="w-5 h-5 text-sky-400" />
-                    <span className="text-sm">Twitter</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                    <Linkedin className="w-5 h-5 text-blue-700" />
-                    <span className="text-sm">LinkedIn</span>
-                  </div>
+              <div className="flex justify-center md:justify-start gap-4 mt-8">
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                  <Instagram className="w-5 h-5 text-pink-500" />
+                  <span className="text-sm">Instagram</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                  <Facebook className="w-5 h-5 text-blue-600" />
+                  <span className="text-sm">Facebook</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                  <Twitter className="w-5 h-5 text-sky-400" />
+                  <span className="text-sm">Twitter</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                  <Linkedin className="w-5 h-5 text-blue-700" />
+                  <span className="text-sm">LinkedIn</span>
                 </div>
               </div>
             </div>
+          </div>
             {/* Right: SVG Illustration (desktop), below on mobile */}
             <div className="flex-1 flex items-center justify-center w-full md:w-auto mt-12 md:mt-0">
               <HeroIllustration />
             </div>
-          </motion.section>
+        </motion.section>
 
           {/* Divider */}
           <div className="w-full h-1 bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900 my-12" />
@@ -917,1383 +917,1383 @@ export default function FileConverter() {
 
           {/* Main Content (Converter, etc.) */}
           <section aria-label="Image Converter" className="max-w-7xl mx-auto px-4 pb-16">
-            <div className="grid lg:grid-cols-3 gap-8">
-              {/* Converter Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="lg:col-span-2"
-              >
-                <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-                  <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-2xl font-semibold">Image Converter</CardTitle>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                          onClick={() => setShowAdvanced(!showAdvanced)}
-                        >
-                          <Settings className="w-4 h-4 mr-2" />
-                          {showAdvanced ? 'Hide Options' : 'Show Options'}
-                        </Button>
-                        {/* <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                          onClick={handleShowPreview}
-                          disabled={isPreviewLoading || !selectedFile || !toFormat}
-                        >
-                          <Maximize2 className="w-4 h-4 mr-2" />
-                          {isPreviewLoading ? 'Loading...' : 'Preview'}
-                        </Button> */}
-                      </div>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Converter Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="lg:col-span-2"
+            >
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+                <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-2xl font-semibold">Image Converter</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                        onClick={() => setShowAdvanced(!showAdvanced)}
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        {showAdvanced ? 'Hide Options' : 'Show Options'}
+                      </Button>
+                      {/* <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                        onClick={handleShowPreview}
+                        disabled={isPreviewLoading || !selectedFile || !toFormat}
+                      >
+                        <Maximize2 className="w-4 h-4 mr-2" />
+                        {isPreviewLoading ? 'Loading...' : 'Preview'}
+                      </Button> */}
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6 pt-6">
-                    {/* Mode Selection */}
-                    <div className="flex flex-col items-center mb-6">
-                      <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-700 p-1 mb-2">
-                        <button
-                          className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-                            mode === 'convert'
-                              ? 'bg-blue-600 text-white shadow-lg scale-105'
-                              : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
-                          }`}
-                          onClick={() => setMode('convert')}
-                          type="button"
-                          aria-pressed={mode === 'convert'}
-                        >
-                          <FileText className="w-4 h-4 mr-2 inline" />
-                          Convert
-                        </button>
-                        <button
-                          className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-                            mode === 'optimize'
-                              ? 'bg-blue-600 text-white shadow-lg scale-105'
-                              : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
-                          }`}
-                          onClick={() => setMode('optimize')}
-                          type="button"
-                          aria-pressed={mode === 'optimize'}
-                        >
-                          <Sparkles className="w-4 h-4 mr-2 inline" />
-                          Optimize
-                        </button>
-                      </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md">
-                        {mode === 'convert'
-                          ? 'Convert your image to a new format and optimize it for web or social media.'
-                          : 'Optimize your image for web or social media without changing its format.'}
-                      </p>
-                    </div>
-
-                    {/* File Upload Area */}
-                    <motion.div
-                      ref={uploadAreaRef}
-                      initial={{ opacity: 0, scale: 0.97 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true, amount: 0.5 }}
-                      className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
-                        ${isDragOver 
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 scale-[1.02]' 
-                          : selectedFile 
-                            ? 'border-green-500 bg-green-50 dark:bg-green-900/30' 
-                            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6 pt-6">
+                  {/* Mode Selection */}
+                  <div className="flex flex-col items-center mb-6">
+                    <div className="inline-flex rounded-lg bg-gray-100 dark:bg-gray-700 p-1 mb-2">
+                      <button
+                        className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                          mode === 'convert'
+                            ? 'bg-blue-600 text-white shadow-lg scale-105'
+                            : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
-                      onDrop={handleDrop}
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onClick={() => document.getElementById("file-input")?.click()}
-                    >
-                      <input
-                        id="file-input"
-                        type="file"
-                        className="hidden"
-                        onChange={handleFileInput}
-                        accept="image/png,image/jpeg,image/jpg,image/webp,image/avif"
-                      />
-                      {selectedFile ? (
-                        <div className="space-y-4">
-                          {previewUrl && (
-                            <div className="relative max-h-64 overflow-hidden rounded-lg group">
-                              <img
-                                src={previewUrl}
-                                alt="Preview"
-                                className="object-contain max-h-60 w-full rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                              />
-                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <Button
-                                  variant="secondary"
-                                  size="sm"
-                                  className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setShowPreview(true)
-                                  }}
-                                >
-                                  <Maximize2 className="w-4 h-4 mr-2" />
-                                  View Full Size
-                                </Button>
-                              </div>
-                            </div>
-                          )}
-                          <div>
-                            <p className="font-medium text-lg truncate">{selectedFile.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
-                            {detectedFormat && (
-                              <Badge className="mt-2 bg-blue-600 dark:bg-blue-700">
-                                {detectedFormat.toUpperCase()}
-                              </Badge>
-                            )}
-                            {imageMetadata && (
-                              <div className="mt-2 flex justify-center gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    setShowMetadata(!showMetadata)
-                                  }}
-                                >
-                                  <Info className="w-4 h-4 mr-1" />
-                                  {showMetadata ? 'Hide Details' : 'Show Details'}
-                                </Button>
-                                {showMetadata && (
-                                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                                    {imageMetadata.width} × {imageMetadata.height}px
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          <div className="w-16 h-16 mx-auto bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                            <Upload className="w-8 h-8 text-blue-500 dark:text-blue-400" />
-                          </div>
-                          <div>
-                            <p className="text-lg font-medium">Drop your image here</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                              or click to browse files
-                            </p>
-                          </div>
-                          <p className="text-xs text-gray-400 dark:text-gray-500">
-                            Supports PNG, JPG, WebP, AVIF
-                          </p>
-                        </div>
-                      )}
-                    </motion.div>
+                        onClick={() => setMode('convert')}
+                        type="button"
+                        aria-pressed={mode === 'convert'}
+                      >
+                        <FileText className="w-4 h-4 mr-2 inline" />
+                        Convert
+                      </button>
+                      <button
+                        className={`px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                          mode === 'optimize'
+                            ? 'bg-blue-600 text-white shadow-lg scale-105'
+                            : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                        onClick={() => setMode('optimize')}
+                        type="button"
+                        aria-pressed={mode === 'optimize'}
+                      >
+                        <Sparkles className="w-4 h-4 mr-2 inline" />
+                        Optimize
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md">
+                      {mode === 'convert'
+                        ? 'Convert your image to a new format and optimize it for web or social media.'
+                        : 'Optimize your image for web or social media without changing its format.'}
+                    </p>
+                  </div>
 
-                    {/* Format Selection */}
-                    {mode === 'convert' && (
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium">Convert to</Label>
-                        <Select value={toFormat} onValueChange={setToFormat}>
-                          <SelectTrigger className="h-12 bg-white dark:bg-gray-700">
-                            <SelectValue placeholder="Select format" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white dark:bg-gray-700">
-                            {fileFormats
-                              .filter((format: FileFormat) => format.value !== detectedFormat)
-                              .map((format: FileFormat) => (
-                                <SelectItem key={format.value} value={format.value}>
-                                  <div className="flex items-center gap-2">
-                                    <span className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold">
-                                      {format.value.toUpperCase()}
-                                    </span>
-                                    {format.label}
-                                  </div>
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
-                    {showAdvanced && (
-                      <div className="space-y-8 p-6 bg-white/80 dark:bg-neutral-900/60 border border-white/10 dark:border-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 md:p-14 max-w-4xl min-w-[380px] sm:min-w-[520px] md:min-w-[640px] w-full mx-auto text-center md:text-left">
-                        {/* Quick Presets */}
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-bold flex items-center gap-2">
-                              <Wand2 className="w-5 h-5 text-purple-500" />
-                              Quick Presets
-                            </h3>
-                            <Select value={selectedOptimization} onValueChange={handleOptimizationPreset}>
-                              <SelectTrigger className="w-[200px]">
-                                <SelectValue placeholder="Select preset" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="custom">Custom</SelectItem>
-                                {Object.entries(OPTIMIZATION_PRESETS).map(([key, preset]) => (
-                                  <SelectItem key={key} value={key}>
-                                    <div className="flex items-center gap-2">
-                                      {key === 'web' ? <Globe className="w-4 h-4" /> :
-                                       key === 'print' ? <Printer className="w-4 h-4" /> :
-                                       key === 'mobile' ? <Smartphone className="w-4 h-4" /> :
-                                       key === 'ai_enhance' ? <Sparkles className="w-4 h-4" /> :
-                                       <Settings className="w-4 h-4" />}
-                                      {preset.name}
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          {selectedOptimization !== 'custom' && (
-                            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                              <p className="text-sm text-purple-700 dark:text-purple-300">
-                                {OPTIMIZATION_PRESETS[selectedOptimization].description}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Social Media Optimization */}
-                        <div className="space-y-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Share2 className="w-5 h-5 text-blue-500" />
-                            <h3 className="text-lg font-bold">Social Media Optimization</h3>
-                          </div>
-                          <div className="grid sm:grid-cols-2 gap-6">
-                            <div>
-                              <Label className="text-sm font-medium">Platform</Label>
-                              <Select 
-                                value={socialMediaPlatform} 
-                                onValueChange={(value) => {
-                                  setSocialMediaPlatform(value as keyof typeof SOCIAL_MEDIA_PRESETS | 'custom')
-                                  setSocialMediaType('')
+                  {/* File Upload Area */}
+                  <motion.div
+                    ref={uploadAreaRef}
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
+                      ${isDragOver 
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 scale-[1.02]' 
+                        : selectedFile 
+                          ? 'border-green-500 bg-green-50 dark:bg-green-900/30' 
+                          : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onClick={() => document.getElementById("file-input")?.click()}
+                  >
+                    <input
+                      id="file-input"
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileInput}
+                      accept="image/png,image/jpeg,image/jpg,image/webp,image/avif"
+                    />
+                    {selectedFile ? (
+                      <div className="space-y-4">
+                        {previewUrl && (
+                          <div className="relative max-h-64 overflow-hidden rounded-lg group">
+                            <img
+                              src={previewUrl}
+                              alt="Preview"
+                              className="object-contain max-h-60 w-full rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setShowPreview(true)
                                 }}
                               >
-                                <SelectTrigger className="h-12 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
-                                  <SelectValue placeholder="Select platform" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-gray-700">
-                                  <SelectItem value="custom">Custom</SelectItem>
-                                  <SelectItem value="instagram">
-                                    <div className="flex items-center gap-2">
-                                      <Instagram className="w-4 h-4 text-pink-500" />
-                                      Instagram
-                                    </div>
-                                  </SelectItem>
-                                  <SelectItem value="facebook">
-                                    <div className="flex items-center gap-2">
-                                      <Facebook className="w-4 h-4 text-blue-600" />
-                                      Facebook
-                                    </div>
-                                  </SelectItem>
-                                  <SelectItem value="twitter">
-                                    <div className="flex items-center gap-2">
-                                      <Twitter className="w-4 h-4 text-sky-400" />
-                                      Twitter
-                                    </div>
-                                  </SelectItem>
-                                  <SelectItem value="linkedin">
-                                    <div className="flex items-center gap-2">
-                                      <Linkedin className="w-4 h-4 text-blue-700" />
-                                      LinkedIn
-                                    </div>
-                                  </SelectItem>
-                                  <SelectItem value="pinterest">
-                                    <div className="flex items-center gap-2">
-                                      <Share2 className="w-4 h-4 text-red-500" />
-                                      Pinterest
-                                    </div>
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                                <Maximize2 className="w-4 h-4 mr-2" />
+                                View Full Size
+                              </Button>
                             </div>
-
-                            {socialMediaPlatform && socialMediaPlatform !== 'custom' && (
-                              <div>
-                                <Label className="text-sm font-medium">Type</Label>
-                                <Select 
-                                  value={socialMediaType} 
-                                  onValueChange={(value) => handleSocialMediaPreset(socialMediaPlatform, value)}
-                                >
-                                  <SelectTrigger className="h-12 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
-                                    <SelectValue placeholder="Select type" />
-                                  </SelectTrigger>
-                                  <SelectContent className="bg-white dark:bg-gray-700">
-                                    {Object.entries(SOCIAL_MEDIA_PRESETS[socialMediaPlatform]).map(([type, preset]) => (
-                                      <SelectItem key={type} value={type}>
-                                        <div className="flex items-center gap-3">
-                                          <span className="min-w-[64px] px-2 h-7 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold text-gray-700 dark:text-gray-200">
-                                            {preset.width}×{preset.height}
-                                          </span>
-                                          <span className="whitespace-nowrap">{preset.label}</span>
-                                        </div>
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            )}
                           </div>
-
-                          {socialMediaPlatform && socialMediaPlatform !== 'custom' && socialMediaType && (
-                            <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-lg mt-2">
-                              <div className="flex items-start gap-3">
-                                <Info className="w-5 h-5 text-blue-500 mt-0.5" />
-                                <div>
-                                  <p className="font-medium">Optimization Tips</p>
-                                  <ul className="text-sm text-gray-700 dark:text-gray-200 mt-1 space-y-1">
-                                    <li>• Image quality optimized for {socialMediaPlatform}</li>
-                                    <li>• Progressive loading enabled for faster display</li>
-                                    <li>• Automatic compression applied</li>
-                                    <li>• Dimensions set to recommended size</li>
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
+                        )}
+                        <div>
+                          <p className="font-medium text-lg truncate">{selectedFile.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                          {detectedFormat && (
+                            <Badge className="mt-2 bg-blue-600 dark:bg-blue-700">
+                              {detectedFormat.toUpperCase()}
+                            </Badge>
                           )}
-                        </div>
-
-                        {/* Image Adjustments */}
-                        <div className="space-y-6">
-                          <h3 className="text-lg font-bold flex items-center gap-2">
-                            <Palette className="w-5 h-5 text-purple-500" />
-                            Image Adjustments
-                          </h3>
-                          
-                          {/* Quality and Rotation */}
-                          <div className="grid sm:grid-cols-2 gap-8">
-                            <div>
-                              <Label className="text-sm font-semibold mb-2 block">
-                                Quality: <span className="text-blue-600">{imageOptions.quality}%</span>
-                              </Label>
-                              <Slider
-                                value={[imageOptions.quality]}
-                                onValueChange={(value) => setImageOptions({ ...imageOptions, quality: value[0] })}
-                                min={1}
-                                max={100}
-                                step={1}
-                                className={sliderColorClass('blue')}
-                              />
-                            </div>
-                            <div>
-                              <Label className="text-sm font-semibold mb-2 block">
-                                Rotation: <span className="text-blue-600">{imageOptions.rotate}°</span>
-                              </Label>
-                              <Slider
-                                value={[imageOptions.rotate]}
-                                onValueChange={(value) => setImageOptions({ ...imageOptions, rotate: value[0] })}
-                                min={0}
-                                max={360}
-                                step={90}
-                                className={sliderColorClass('blue')}
-                              />
-                            </div>
-                          </div>
-
-                          {/* Dimensions */}
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                              <Label className="text-sm font-semibold">Dimensions</Label>
+                          {imageMetadata && (
+                            <div className="mt-2 flex justify-center gap-2">
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => {
-                                  if (imageMetadata) {
-                                    setImageOptions({
-                                      ...imageOptions,
-                                      width: imageMetadata.width,
-                                      height: imageMetadata.height
-                                    })
-                                  }
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setShowMetadata(!showMetadata)
                                 }}
                               >
-                                <RotateCw className="w-4 h-4 mr-2" />
-                                Reset to Original
+                                <Info className="w-4 h-4 mr-1" />
+                                {showMetadata ? 'Hide Details' : 'Show Details'}
                               </Button>
+                              {showMetadata && (
+                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                  {imageMetadata.width} × {imageMetadata.height}px
+                                </span>
+                              )}
                             </div>
-                            <div className="grid sm:grid-cols-2 gap-6">
-                              <div>
-                                <Label className="text-sm">Width (px)</Label>
-                                <input
-                                  type="number"
-                                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
-                                  value={imageOptions.width || ''}
-                                  onChange={(e) => {
-                                    setInstagramPreset('custom')
-                                    setImageOptions({ ...imageOptions, width: e.target.value ? parseInt(e.target.value) : undefined })
-                                  }}
-                                  placeholder="Original width"
-                                  min={1}
-                                  max={8000}
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-sm">Height (px)</Label>
-                                <input
-                                  type="number"
-                                  className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
-                                  value={imageOptions.height || ''}
-                                  onChange={(e) => {
-                                    setInstagramPreset('custom')
-                                    setImageOptions({ ...imageOptions, height: e.target.value ? parseInt(e.target.value) : undefined })
-                                  }}
-                                  placeholder="Original height"
-                                  min={1}
-                                  max={8000}
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Color Adjustments */}
-                          <div className="space-y-4">
-                            <h4 className="text-sm font-semibold">Color Adjustments</h4>
-                            <div className="grid sm:grid-cols-3 gap-6">
-                              <div>
-                                <Label className="text-sm">
-                                  Brightness: <span className="text-purple-600">{imageOptions.brightness}%</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.brightness]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, brightness: value[0] })}
-                                  min={-100}
-                                  max={100}
-                                  step={1}
-                                  className={sliderColorClass('purple')}
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-sm">
-                                  Contrast: <span className="text-purple-600">{imageOptions.contrast}%</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.contrast]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, contrast: value[0] })}
-                                  min={-100}
-                                  max={100}
-                                  step={1}
-                                  className={sliderColorClass('purple', 'blue')}
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-sm">
-                                  Saturation: <span className="text-purple-600">{imageOptions.saturation}%</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.saturation]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, saturation: value[0] })}
-                                  min={-100}
-                                  max={100}
-                                  step={1}
-                                  className={sliderColorClass('purple')}
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Effects */}
-                          <div className="space-y-4">
-                            <h4 className="text-sm font-semibold">Effects</h4>
-                            <div className="grid sm:grid-cols-2 gap-6">
-                              <div>
-                                <Label className="text-sm">
-                                  Blur: <span className="text-teal-600">{imageOptions.blur.toFixed(1)}</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.blur]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, blur: value[0] })}
-                                  min={0}
-                                  max={10}
-                                  step={0.1}
-                                  className={sliderColorClass('teal')}
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-sm">
-                                  Sharpen: <span className="text-teal-600">{imageOptions.sharpen.toFixed(1)}</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.sharpen]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, sharpen: value[0] })}
-                                  min={0}
-                                  max={10}
-                                  step={0.1}
-                                  className={sliderColorClass('teal')}
-                                />
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              <Button
-                                variant={imageOptions.grayscale ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => setImageOptions({ ...imageOptions, grayscale: !imageOptions.grayscale })}
-                                className={
-                                  imageOptions.grayscale
-                                    ? 'bg-blue-600 dark:bg-blue-700 text-white'
-                                    : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
-                                }
-                              >
-                                <Droplet className="w-4 h-4 mr-2" />
-                                Grayscale
-                              </Button>
-                              <Button
-                                variant={imageOptions.optimize ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => setImageOptions({ ...imageOptions, optimize: !imageOptions.optimize })}
-                                className={
-                                  imageOptions.optimize
-                                    ? 'bg-blue-600 dark:bg-blue-700 text-white'
-                                    : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
-                                }
-                              >
-                                <Sparkles className="w-4 h-4 mr-2" />
-                                Optimize
-                              </Button>
-                            </div>
-                          </div>
-
-                          {/* New Creative Tools Section */}
-                          <div className="space-y-4">
-                            <h4 className="text-sm font-semibold flex items-center gap-2">
-                              <Wand2 className="w-4 h-4 text-purple-500" />
-                              Creative Tools
-                            </h4>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Camera className="w-4 h-4 mr-2" />
-                                Auto-Enhance
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Layers className="w-4 h-4 mr-2" />
-                                Remove Background
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <FileStack className="w-4 h-4 mr-2" />
-                                Collage Maker
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Palette className="w-4 h-4 mr-2" />
-                                Color Grading
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Droplet className="w-4 h-4 mr-2" />
-                                Double Exposure
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Maximize2 className="w-4 h-4 mr-2" />
-                                Tilt-Shift
-                              </Button>
-                            </div>
-                          </div>
-
-                          {/* New Color Tools Section */}
-                          <div className="space-y-4">
-                            <h4 className="text-sm font-semibold flex items-center gap-2">
-                              <Palette className="w-4 h-4 text-purple-500" />
-                              Color Tools
-                            </h4>
-                            <div className="grid sm:grid-cols-2 gap-6">
-                              <div>
-                                <Label className="text-sm">
-                                  Temperature: <span className="text-purple-600">{imageOptions.temperature || 0}°K</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.temperature || 0]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, temperature: value[0] })}
-                                  min={-100}
-                                  max={100}
-                                  step={1}
-                                  className={sliderColorClass('purple')}
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-sm">
-                                  Tint: <span className="text-purple-600">{imageOptions.tint || 0}%</span>
-                                </Label>
-                                <Slider
-                                  value={[imageOptions.tint || 0]}
-                                  onValueChange={(value) => setImageOptions({ ...imageOptions, tint: value[0] })}
-                                  min={-100}
-                                  max={100}
-                                  step={1}
-                                  className={sliderColorClass('purple')}
-                                />
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                Split Toning
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                Color Balance
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                Selective Color
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                Extract Palette
-                              </Button>
-                            </div>
-                          </div>
-
-                          {/* New Export Options Section */}
-                          <div className="space-y-4">
-                            <h4 className="text-sm font-semibold flex items-center gap-2">
-                              <Download className="w-4 h-4 text-purple-500" />
-                              Export Options
-                            </h4>
-                            <div className="grid sm:grid-cols-3 gap-6">
-                              <div className="flex items-center gap-2">
-                                <Switch
-                                  id="preserve-metadata"
-                                  checked={imageOptions.preserveMetadata}
-                                  onCheckedChange={(checked) => setImageOptions({ ...imageOptions, preserveMetadata: checked })}
-                                />
-                                <Label htmlFor="preserve-metadata">Preserve Metadata</Label>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Switch
-                                  id="progressive"
-                                  checked={imageOptions.progressive}
-                                  onCheckedChange={(checked) => setImageOptions({ ...imageOptions, progressive: checked })}
-                                />
-                                <Label htmlFor="progressive">Progressive Loading</Label>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Switch
-                                  id="lossless"
-                                  checked={imageOptions.lossless}
-                                  onCheckedChange={(checked) => setImageOptions({ ...imageOptions, lossless: checked })}
-                                />
-                                <Label htmlFor="lossless">Lossless Compression</Label>
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <FileStack className="w-4 h-4 mr-2" />
-                                Batch Export
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Info className="w-4 h-4 mr-2" />
-                                Edit Metadata
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Share2 className="w-4 h-4 mr-2" />
-                                Share Preset
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowComingSoon(true)}
-                                className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
-                              >
-                                <Download className="w-4 h-4 mr-2" />
-                                Multiple Formats
-                              </Button>
-                            </div>
-                          </div>
+                          )}
                         </div>
                       </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="w-16 h-16 mx-auto bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                          <Upload className="w-8 h-8 text-blue-500 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="text-lg font-medium">Drop your image here</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            or click to browse files
+                          </p>
+                        </div>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                          Supports PNG, JPG, WebP, AVIF
+                        </p>
+                      </div>
                     )}
+                  </motion.div>
 
-                    {/* Convert Button */}
-                    <Button
-                      onClick={() => mode === 'convert' ? handleConvert() : handleConvert(true)}
-                      disabled={
-                        isConverting ||
-                        !selectedFile ||
-                        !detectedFormat ||
-                        (mode === 'convert' && (!toFormat || detectedFormat === toFormat))
-                      }
-                      className={`w-full h-12 transition-all duration-200 ${
-                        isConverting
-                          ? 'bg-blue-600/80'
-                          : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
-                    >
-                      {isConverting ? (
-                        <>
-                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                          {mode === 'convert' ? 'Converting...' : 'Optimizing...'}
-                        </>
-                      ) : (
-                        <>
-                          {mode === 'convert' ? (
-                            <>
-                              <FileText className="w-5 h-5 mr-2" />
-                              Convert Image
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="w-5 h-5 mr-2" />
-                              Optimize Image
-                            </>
+                  {/* Format Selection */}
+                  {mode === 'convert' && (
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Convert to</Label>
+                      <Select value={toFormat} onValueChange={setToFormat}>
+                        <SelectTrigger className="h-12 bg-white dark:bg-gray-700">
+                          <SelectValue placeholder="Select format" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-700">
+                          {fileFormats
+                            .filter((format: FileFormat) => format.value !== detectedFormat)
+                            .map((format: FileFormat) => (
+                              <SelectItem key={format.value} value={format.value}>
+                                <div className="flex items-center gap-2">
+                                  <span className="w-6 h-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold">
+                                    {format.value.toUpperCase()}
+                                  </span>
+                                  {format.label}
+                                </div>
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {showAdvanced && (
+                      <div className="space-y-8 p-6 bg-white/80 dark:bg-neutral-900/60 border border-white/10 dark:border-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 md:p-14 max-w-4xl min-w-[380px] sm:min-w-[520px] md:min-w-[640px] w-full mx-auto text-center md:text-left">
+                      {/* Quick Presets */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-bold flex items-center gap-2">
+                            <Wand2 className="w-5 h-5 text-purple-500" />
+                            Quick Presets
+                          </h3>
+                          <Select value={selectedOptimization} onValueChange={handleOptimizationPreset}>
+                            <SelectTrigger className="w-[200px]">
+                              <SelectValue placeholder="Select preset" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="custom">Custom</SelectItem>
+                              {Object.entries(OPTIMIZATION_PRESETS).map(([key, preset]) => (
+                                <SelectItem key={key} value={key}>
+                                  <div className="flex items-center gap-2">
+                                    {key === 'web' ? <Globe className="w-4 h-4" /> :
+                                     key === 'print' ? <Printer className="w-4 h-4" /> :
+                                     key === 'mobile' ? <Smartphone className="w-4 h-4" /> :
+                                     key === 'ai_enhance' ? <Sparkles className="w-4 h-4" /> :
+                                     <Settings className="w-4 h-4" />}
+                                    {preset.name}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        {selectedOptimization !== 'custom' && (
+                          <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                            <p className="text-sm text-purple-700 dark:text-purple-300">
+                              {OPTIMIZATION_PRESETS[selectedOptimization].description}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Social Media Optimization */}
+                      <div className="space-y-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Share2 className="w-5 h-5 text-blue-500" />
+                          <h3 className="text-lg font-bold">Social Media Optimization</h3>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                          <div>
+                            <Label className="text-sm font-medium">Platform</Label>
+                            <Select 
+                              value={socialMediaPlatform} 
+                              onValueChange={(value) => {
+                                setSocialMediaPlatform(value as keyof typeof SOCIAL_MEDIA_PRESETS | 'custom')
+                                setSocialMediaType('')
+                              }}
+                            >
+                              <SelectTrigger className="h-12 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                                <SelectValue placeholder="Select platform" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-white dark:bg-gray-700">
+                                <SelectItem value="custom">Custom</SelectItem>
+                                <SelectItem value="instagram">
+                                  <div className="flex items-center gap-2">
+                                    <Instagram className="w-4 h-4 text-pink-500" />
+                                    Instagram
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="facebook">
+                                  <div className="flex items-center gap-2">
+                                    <Facebook className="w-4 h-4 text-blue-600" />
+                                    Facebook
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="twitter">
+                                  <div className="flex items-center gap-2">
+                                    <Twitter className="w-4 h-4 text-sky-400" />
+                                    Twitter
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="linkedin">
+                                  <div className="flex items-center gap-2">
+                                    <Linkedin className="w-4 h-4 text-blue-700" />
+                                    LinkedIn
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="pinterest">
+                                  <div className="flex items-center gap-2">
+                                    <Share2 className="w-4 h-4 text-red-500" />
+                                    Pinterest
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {socialMediaPlatform && socialMediaPlatform !== 'custom' && (
+                            <div>
+                              <Label className="text-sm font-medium">Type</Label>
+                              <Select 
+                                value={socialMediaType} 
+                                onValueChange={(value) => handleSocialMediaPreset(socialMediaPlatform, value)}
+                              >
+                                <SelectTrigger className="h-12 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                                  <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-gray-700">
+                                  {Object.entries(SOCIAL_MEDIA_PRESETS[socialMediaPlatform]).map(([type, preset]) => (
+                                    <SelectItem key={type} value={type}>
+                                      <div className="flex items-center gap-3">
+                                        <span className="min-w-[64px] px-2 h-7 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded text-xs font-bold text-gray-700 dark:text-gray-200">
+                                          {preset.width}×{preset.height}
+                                        </span>
+                                        <span className="whitespace-nowrap">{preset.label}</span>
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           )}
-                          <ArrowRight className="w-5 h-5 ml-2" />
-                        </>
-                      )}
-                    </Button>
+                        </div>
 
-                    {/* Conversion Result */}
-                    {convertedFile && (
-                      <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between animate-in slide-in-from-bottom-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
-                            <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        {socialMediaPlatform && socialMediaPlatform !== 'custom' && socialMediaType && (
+                          <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-lg mt-2">
+                            <div className="flex items-start gap-3">
+                              <Info className="w-5 h-5 text-blue-500 mt-0.5" />
+                              <div>
+                                <p className="font-medium">Optimization Tips</p>
+                                <ul className="text-sm text-gray-700 dark:text-gray-200 mt-1 space-y-1">
+                                  <li>• Image quality optimized for {socialMediaPlatform}</li>
+                                  <li>• Progressive loading enabled for faster display</li>
+                                  <li>• Automatic compression applied</li>
+                                  <li>• Dimensions set to recommended size</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Image Adjustments */}
+                      <div className="space-y-6">
+                        <h3 className="text-lg font-bold flex items-center gap-2">
+                          <Palette className="w-5 h-5 text-purple-500" />
+                          Image Adjustments
+                        </h3>
+                        
+                        {/* Quality and Rotation */}
+                        <div className="grid sm:grid-cols-2 gap-8">
+                          <div>
+                            <Label className="text-sm font-semibold mb-2 block">
+                              Quality: <span className="text-blue-600">{imageOptions.quality}%</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.quality]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, quality: value[0] })}
+                              min={1}
+                              max={100}
+                              step={1}
+                              className={sliderColorClass('blue')}
+                            />
                           </div>
                           <div>
-                            <p className="font-medium">Conversion Complete!</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
+                            <Label className="text-sm font-semibold mb-2 block">
+                              Rotation: <span className="text-blue-600">{imageOptions.rotate}°</span>
+                            </Label>
+                            <Slider
+                              value={[imageOptions.rotate]}
+                              onValueChange={(value) => setImageOptions({ ...imageOptions, rotate: value[0] })}
+                              min={0}
+                              max={360}
+                              step={90}
+                              className={sliderColorClass('blue')}
+                            />
                           </div>
                         </div>
-                        <Button 
-                          onClick={handleDownload} 
-                          className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
-                        </Button>
+
+                        {/* Dimensions */}
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-semibold">Dimensions</Label>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                if (imageMetadata) {
+                                  setImageOptions({
+                                    ...imageOptions,
+                                    width: imageMetadata.width,
+                                    height: imageMetadata.height
+                                  })
+                                }
+                              }}
+                            >
+                              <RotateCw className="w-4 h-4 mr-2" />
+                              Reset to Original
+                            </Button>
+                          </div>
+                          <div className="grid sm:grid-cols-2 gap-6">
+                            <div>
+                              <Label className="text-sm">Width (px)</Label>
+                              <input
+                                type="number"
+                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
+                                value={imageOptions.width || ''}
+                                onChange={(e) => {
+                                  setInstagramPreset('custom')
+                                  setImageOptions({ ...imageOptions, width: e.target.value ? parseInt(e.target.value) : undefined })
+                                }}
+                                placeholder="Original width"
+                                min={1}
+                                max={8000}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm">Height (px)</Label>
+                              <input
+                                type="number"
+                                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
+                                value={imageOptions.height || ''}
+                                onChange={(e) => {
+                                  setInstagramPreset('custom')
+                                  setImageOptions({ ...imageOptions, height: e.target.value ? parseInt(e.target.value) : undefined })
+                                }}
+                                placeholder="Original height"
+                                min={1}
+                                max={8000}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Color Adjustments */}
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-semibold">Color Adjustments</h4>
+                          <div className="grid sm:grid-cols-3 gap-6">
+                            <div>
+                              <Label className="text-sm">
+                                Brightness: <span className="text-purple-600">{imageOptions.brightness}%</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.brightness]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, brightness: value[0] })}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className={sliderColorClass('purple')}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm">
+                                Contrast: <span className="text-purple-600">{imageOptions.contrast}%</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.contrast]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, contrast: value[0] })}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className={sliderColorClass('purple', 'blue')}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm">
+                                Saturation: <span className="text-purple-600">{imageOptions.saturation}%</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.saturation]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, saturation: value[0] })}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className={sliderColorClass('purple')}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Effects */}
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-semibold">Effects</h4>
+                          <div className="grid sm:grid-cols-2 gap-6">
+                            <div>
+                              <Label className="text-sm">
+                                Blur: <span className="text-teal-600">{imageOptions.blur.toFixed(1)}</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.blur]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, blur: value[0] })}
+                                min={0}
+                                max={10}
+                                step={0.1}
+                                className={sliderColorClass('teal')}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm">
+                                Sharpen: <span className="text-teal-600">{imageOptions.sharpen.toFixed(1)}</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.sharpen]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, sharpen: value[0] })}
+                                min={0}
+                                max={10}
+                                step={0.1}
+                                className={sliderColorClass('teal')}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <Button
+                              variant={imageOptions.grayscale ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setImageOptions({ ...imageOptions, grayscale: !imageOptions.grayscale })}
+                              className={
+                                imageOptions.grayscale
+                                  ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                                  : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                              }
+                            >
+                              <Droplet className="w-4 h-4 mr-2" />
+                              Grayscale
+                            </Button>
+                            <Button
+                              variant={imageOptions.optimize ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setImageOptions({ ...imageOptions, optimize: !imageOptions.optimize })}
+                              className={
+                                imageOptions.optimize
+                                  ? 'bg-blue-600 dark:bg-blue-700 text-white'
+                                  : 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white'
+                              }
+                            >
+                              <Sparkles className="w-4 h-4 mr-2" />
+                              Optimize
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* New Creative Tools Section */}
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-semibold flex items-center gap-2">
+                            <Wand2 className="w-4 h-4 text-purple-500" />
+                            Creative Tools
+                          </h4>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Camera className="w-4 h-4 mr-2" />
+                              Auto-Enhance
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Layers className="w-4 h-4 mr-2" />
+                              Remove Background
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <FileStack className="w-4 h-4 mr-2" />
+                              Collage Maker
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Palette className="w-4 h-4 mr-2" />
+                              Color Grading
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Droplet className="w-4 h-4 mr-2" />
+                              Double Exposure
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Maximize2 className="w-4 h-4 mr-2" />
+                              Tilt-Shift
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* New Color Tools Section */}
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-semibold flex items-center gap-2">
+                            <Palette className="w-4 h-4 text-purple-500" />
+                            Color Tools
+                          </h4>
+                          <div className="grid sm:grid-cols-2 gap-6">
+                            <div>
+                              <Label className="text-sm">
+                                Temperature: <span className="text-purple-600">{imageOptions.temperature || 0}°K</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.temperature || 0]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, temperature: value[0] })}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className={sliderColorClass('purple')}
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-sm">
+                                Tint: <span className="text-purple-600">{imageOptions.tint || 0}%</span>
+                              </Label>
+                              <Slider
+                                value={[imageOptions.tint || 0]}
+                                onValueChange={(value) => setImageOptions({ ...imageOptions, tint: value[0] })}
+                                min={-100}
+                                max={100}
+                                step={1}
+                                className={sliderColorClass('purple')}
+                              />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              Split Toning
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              Color Balance
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              Selective Color
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              Extract Palette
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* New Export Options Section */}
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-semibold flex items-center gap-2">
+                            <Download className="w-4 h-4 text-purple-500" />
+                            Export Options
+                          </h4>
+                          <div className="grid sm:grid-cols-3 gap-6">
+                            <div className="flex items-center gap-2">
+                              <Switch
+                                id="preserve-metadata"
+                                checked={imageOptions.preserveMetadata}
+                                onCheckedChange={(checked) => setImageOptions({ ...imageOptions, preserveMetadata: checked })}
+                              />
+                              <Label htmlFor="preserve-metadata">Preserve Metadata</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch
+                                id="progressive"
+                                checked={imageOptions.progressive}
+                                onCheckedChange={(checked) => setImageOptions({ ...imageOptions, progressive: checked })}
+                              />
+                              <Label htmlFor="progressive">Progressive Loading</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch
+                                id="lossless"
+                                checked={imageOptions.lossless}
+                                onCheckedChange={(checked) => setImageOptions({ ...imageOptions, lossless: checked })}
+                              />
+                              <Label htmlFor="lossless">Lossless Compression</Label>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <FileStack className="w-4 h-4 mr-2" />
+                              Batch Export
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Info className="w-4 h-4 mr-2" />
+                              Edit Metadata
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Share2 className="w-4 h-4 mr-2" />
+                              Share Preset
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowComingSoon(true)}
+                              className="bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                            >
+                              <Download className="w-4 h-4 mr-2" />
+                              Multiple Formats
+                            </Button>
+                          </div>
+                        </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Convert Button */}
+                  <Button
+                    onClick={() => mode === 'convert' ? handleConvert() : handleConvert(true)}
+                    disabled={
+                      isConverting ||
+                      !selectedFile ||
+                      !detectedFormat ||
+                      (mode === 'convert' && (!toFormat || detectedFormat === toFormat))
+                    }
+                    className={`w-full h-12 transition-all duration-200 ${
+                      isConverting
+                        ? 'bg-blue-600/80'
+                        : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {isConverting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        {mode === 'convert' ? 'Converting...' : 'Optimizing...'}
+                      </>
+                    ) : (
+                      <>
+                        {mode === 'convert' ? (
+                          <>
+                            <FileText className="w-5 h-5 mr-2" />
+                            Convert Image
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-5 h-5 mr-2" />
+                            Optimize Image
+                          </>
+                        )}
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </>
                     )}
+                  </Button>
+
+                  {/* Conversion Result */}
+                  {convertedFile && (
+                    <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl flex items-center justify-between animate-in slide-in-from-bottom-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
+                          <Download className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Conversion Complete!</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{convertedFile}</p>
+                        </div>
+                      </div>
+                      <Button 
+                        onClick={handleDownload} 
+                        className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Sidebar (Desktop Only) */}
+            <div className="space-y-6 hidden lg:block">
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="sticky top-24 mb-4"
+              >
+                {/* <div className="w-[300px] mx-auto mb-4">
+                  <GoogleAdClient
+                    adClient="ca-pub-1009479093659621"
+                    adSlot="8774727539"
+                    style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
+                    className="rounded-xl"
+                    format="rectangle"
+                  />
+                </div> */}
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              >
+                <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-semibold">Features</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <Zap className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+                      <div>
+                        <p className="font-medium">Fast Conversion</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Convert images in seconds with high quality.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Share2 className="w-6 h-6 text-green-500 dark:text-green-400" />
+                      <div>
+                        <p className="font-medium">Social Media Ready</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Optimize for Instagram, Facebook, Twitter, LinkedIn & Pinterest with perfect dimensions.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-6 h-6 text-purple-500 dark:text-purple-400" />
+                      <div>
+                        <p className="font-medium">Secure Processing</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Files are processed securely and not stored.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Layers className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+                      <div>
+                        <p className="font-medium">Advanced Tools</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Resize, rotate, apply filters, and enhance quality.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
+                      <div>
+                        <p className="font-medium">Smart Optimization</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Automatic compression and quality optimization.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Wand2 className="w-6 h-6 text-purple-500 dark:text-purple-400" />
+                      <div>
+                        <p className="font-medium">AI Enhancement</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Smart image enhancement and optimization.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <FileStack className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+                      <div>
+                        <p className="font-medium">Batch Processing</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Convert and optimize multiple images at once.</p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
 
-              {/* Sidebar (Desktop Only) */}
-              <div className="space-y-6 hidden lg:block">
-                <motion.div
-                  initial={{ opacity: 0, x: 40 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="sticky top-24 mb-4"
-                >
-                  {/* <div className="w-[300px] mx-auto mb-4">
-                    <GoogleAdClient
-                      adClient="ca-pub-1009479093659621"
-                      adSlot="8774727539"
-                      style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
-                      className="rounded-xl"
-                      format="rectangle"
-                    />
-                  </div> */}
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, x: 40 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                >
-                  <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg">
-                    <CardHeader>
-                      <CardTitle className="text-xl font-semibold">Features</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <Zap className="w-6 h-6 text-blue-500 dark:text-blue-400" />
-                        <div>
-                          <p className="font-medium">Fast Conversion</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Convert images in seconds with high quality.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <Share2 className="w-6 h-6 text-green-500 dark:text-green-400" />
-                        <div>
-                          <p className="font-medium">Social Media Ready</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Optimize for Instagram, Facebook, Twitter, LinkedIn & Pinterest with perfect dimensions.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <Shield className="w-6 h-6 text-purple-500 dark:text-purple-400" />
-                        <div>
-                          <p className="font-medium">Secure Processing</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Files are processed securely and not stored.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <Layers className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-                        <div>
-                          <p className="font-medium">Advanced Tools</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Resize, rotate, apply filters, and enhance quality.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <Sparkles className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
-                        <div>
-                          <p className="font-medium">Smart Optimization</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Automatic compression and quality optimization.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <Wand2 className="w-6 h-6 text-purple-500 dark:text-purple-400" />
-                        <div>
-                          <p className="font-medium">AI Enhancement</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Smart image enhancement and optimization.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <FileStack className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-                        <div>
-                          <p className="font-medium">Batch Processing</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Convert and optimize multiple images at once.</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-
-                {/* <div className="w-[300px] mx-auto mb-4">
-                    <GoogleAdClient
-                      adClient="ca-pub-1009479093659621"
-                      adSlot="8774727539"
-                      style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
-                      className="rounded-xl"
-                      format="rectangle"
-                    />
-                  </div> */}
-              </div>
+              {/* <div className="w-[300px] mx-auto mb-4">
+                  <GoogleAdClient
+                    adClient="ca-pub-1009479093659621"
+                    adSlot="8774727539"
+                    style={{ display: "block", width: 300, height: 250, borderRadius: "0.75rem", overflow: "hidden" }}
+                    className="rounded-xl"
+                    format="rectangle"
+                  />
+                </div> */}
             </div>
+          </div>
           </section>
 
           {/* Divider */}
           <div className="w-full h-1 bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900 my-12" />
 
-          {/* Cookie Consent Banner */}
-          {showCookieConsent && !showCookieSettings && (
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Cookie consent dialog"
-            >
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
-                <div className="flex items-center gap-3">
-                  <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
-                  <span className="font-semibold text-lg">We Value Your Privacy</span>
-                </div>
-                <p className="text-sm text-gray-700 dark:text-gray-200">
-                  We use cookies to enhance your experience, serve personalized content and ads, and analyze our traffic. You can accept all, decline all, or manage your preferences. Read our
-                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">Privacy Policy</a> for more information.
-                </p>
-                <div className="flex flex-wrap gap-2 w-full justify-end">
-                  <Button
-                    variant="ghost"
-                    className="text-gray-700 dark:text-gray-200 hover:underline px-2 py-1 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
-                    onClick={() => setShowCookieSettings(true)}
-                    aria-label="Manage cookie preferences"
-                  >
-                    Manage Preferences
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-gray-300 dark:border-gray-600 px-4 py-2 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
-                    onClick={() => { handleCookieConsent(false); setAnalyticsConsent(false); setAdsConsent(false); }}
-                    aria-label="Decline all cookies"
-                  >
-                    Decline All
-                  </Button>
-                  <Button
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
-                    onClick={() => { handleCookieConsent(true); setAnalyticsConsent(true); setAdsConsent(true); }}
-                    aria-label="Accept all cookies"
-                  >
-                    Accept All
-                  </Button>
-                </div>
+        {/* Cookie Consent Banner */}
+        {showCookieConsent && !showCookieSettings && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Cookie consent dialog"
+          >
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
+              <div className="flex items-center gap-3">
+                <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
+                <span className="font-semibold text-lg">We Value Your Privacy</span>
               </div>
-            </motion.div>
-          )}
-
-          {showCookieConsent && showCookieSettings && (
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Cookie preferences dialog"
-            >
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
-                <div className="flex items-center gap-3 mb-2">
-                  <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
-                  <span className="font-semibold text-lg">Cookie Preferences</span>
-                </div>
-                <div className="w-full space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium">Necessary Cookies</span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Required for basic site functionality. Always enabled.</p>
-                    </div>
-                    <Switch checked disabled id="necessary-cookies" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium">Analytics Cookies</span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Help us understand how visitors interact with our website.</p>
-                    </div>
-                    <Switch
-                      id="analytics-cookies"
-                      checked={analyticsConsent}
-                      onCheckedChange={setAnalyticsConsent}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium">Personalization & Ads Cookies</span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Used to show you personalized content and ads.</p>
-                    </div>
-                    <Switch
-                      id="ads-cookies"
-                      checked={adsConsent}
-                      onCheckedChange={setAdsConsent}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 w-full justify-end mt-2">
-                  <Button
-                    variant="ghost"
-                    className="text-gray-700 dark:text-gray-200 hover:underline px-2 py-1 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
-                    onClick={() => setShowCookieSettings(false)}
-                    aria-label="Back to summary"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-gray-300 dark:border-gray-600 px-4 py-2 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
-                    onClick={() => { handleCookieConsent(false); setShowCookieSettings(false); setAnalyticsConsent(false); setAdsConsent(false); }}
-                    aria-label="Decline all cookies"
-                  >
-                    Decline All
-                  </Button>
-                  <Button
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
-                    onClick={() => {
-                      // Save preferences
-                      handleCookieConsent(analyticsConsent || adsConsent)
-                      setShowCookieSettings(false)
-                    }}
-                    aria-label="Save cookie preferences"
-                  >
-                    Save Preferences
-                  </Button>
-                </div>
+              <p className="text-sm text-gray-700 dark:text-gray-200">
+                We use cookies to enhance your experience, serve personalized content and ads, and analyze our traffic. You can accept all, decline all, or manage your preferences. Read our
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-1">Privacy Policy</a> for more information.
+              </p>
+              <div className="flex flex-wrap gap-2 w-full justify-end">
+                <Button
+                  variant="ghost"
+                  className="text-gray-700 dark:text-gray-200 hover:underline px-2 py-1 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
+                  onClick={() => setShowCookieSettings(true)}
+                  aria-label="Manage cookie preferences"
+                >
+                  Manage Preferences
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-gray-300 dark:border-gray-600 px-4 py-2 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
+                  onClick={() => { handleCookieConsent(false); setAnalyticsConsent(false); setAdsConsent(false); }}
+                  aria-label="Decline all cookies"
+                >
+                  Decline All
+                </Button>
+                <Button
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
+                  onClick={() => { handleCookieConsent(true); setAnalyticsConsent(true); setAdsConsent(true); }}
+                  aria-label="Accept all cookies"
+                >
+                  Accept All
+                </Button>
               </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
+        )}
 
-          {/* Add a Dialog/modal for the preview image at the end of the main content */}
-          <Dialog open={showPreview} onOpenChange={setShowPreview}>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Image Preview</DialogTitle>
-                <DialogDescription>
-                  This is a preview of your image with the current settings.
-                </DialogDescription>
-              </DialogHeader>
-              {isPreviewLoading ? (
-                <div className="flex items-center justify-center h-64">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                </div>
-              ) : previewError ? (
-                <div className="text-red-600 text-center py-8">{previewError}</div>
-              ) : previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="max-w-full max-h-[60vh] mx-auto rounded-lg shadow-lg"
-                />
-              ) : (
-                <div className="text-gray-500 text-center py-8">No preview available.</div>
-              )}
-            </DialogContent>
-          </Dialog>
-
-          {/* Add the Coming Soon modal at the end of the main content */}
-          <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
-            <DialogContent className="max-w-3xl">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-                  <Sparkles className="w-6 h-6 text-blue-600" />
-                  Upcoming Features
-                </DialogTitle>
-                <DialogDescription className="text-base">
-                  A focused roadmap of features we're developing to enhance your image editing experience.
-                </DialogDescription>
-              </DialogHeader>
-              
-              {/* Feature sections */}
-              <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <Wand2 className="w-4 h-4 text-blue-600" />
-                    Core Enhancements
-                  </h3>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                      Smart Auto-Enhance
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                      Basic Background Removal
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                      Simple Object Removal
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-                      Image Upscaling
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <Palette className="w-4 h-4 text-indigo-600" />
-                    Color & Effects
-                  </h3>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
-                      Basic Color Grading
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
-                      Filter Presets
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
-                      HDR Effect
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
-                      Vintage Effects
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <FileStack className="w-4 h-4 text-teal-600" />
-                    Workflow Tools
-                  </h3>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
-                      Batch Processing
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
-                      Save & Load Presets
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
-                      Basic Metadata Editor
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
-                      Export to Multiple Formats
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="p-4 bg-slate-50 dark:bg-slate-900/20 rounded-xl">
-                  <h3 className="font-semibold mb-2 flex items-center gap-2">
-                    <Share2 className="w-4 h-4 text-slate-600" />
-                    Social & Sharing
-                  </h3>
-                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
-                      Social Media Presets
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
-                      Share Settings
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
-                      Quick Export
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
-                      Watermark Tool
-                    </li>
-                  </ul>
-                </div>
+        {showCookieConsent && showCookieSettings && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Cookie preferences dialog"
+          >
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-6 flex flex-col gap-4 items-start">
+              <div className="flex items-center gap-3 mb-2">
+                <Cookie className="w-6 h-6 text-yellow-500" aria-hidden="true" />
+                <span className="font-semibold text-lg">Cookie Preferences</span>
               </div>
-
-              {/* Development Timeline */}
-              <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900/20 rounded-xl">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-gray-600" />
-                  Development Timeline
-                </h3>
-                <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              <div className="w-full space-y-4">
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-700 dark:text-gray-300">Phase 1 (Next 2 Months)</p>
-                    <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
-                      <li>• Core Enhancements</li>
-                      <li>• Basic Color Tools</li>
-                      <li>• Simple Batch Processing</li>
-                    </ul>
+                    <span className="font-medium">Necessary Cookies</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Required for basic site functionality. Always enabled.</p>
                   </div>
+                  <Switch checked disabled id="necessary-cookies" />
+                </div>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-700 dark:text-gray-300">Phase 2 (3-4 Months)</p>
-                    <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
-                      <li>• Advanced Effects</li>
-                      <li>• Social Media Features</li>
-                      <li>• Workflow Improvements</li>
-                    </ul>
+                    <span className="font-medium">Analytics Cookies</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Help us understand how visitors interact with our website.</p>
                   </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                  <Info className="w-4 h-4" />
-                  <span>Follow our development progress</span>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowComingSoon(false)}
-                    className="border-2"
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setShowComingSoon(false)
-                      setShowSubscriptionDialog(true)
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <Bell className="w-4 h-4 mr-2" />
-                    Get Updates
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          {/* Add new Subscription Dialog */}
-          <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                  <Bell className="w-5 h-5 text-blue-600" />
-                  Stay Updated
-                </DialogTitle>
-                <DialogDescription>
-                  Subscribe to receive updates about new features and improvements.
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value)
-                      setSubscriptionStatus({ type: null, message: '' })
-                    }}
-                    className="mt-1"
-                    disabled={isSubscribing}
+                  <Switch
+                    id="analytics-cookies"
+                    checked={analyticsConsent}
+                    onCheckedChange={setAnalyticsConsent}
                   />
                 </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">Interests</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="core"
-                        checked={selectedInterests.includes('core')}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedInterests([...selectedInterests, 'core'])
-                          } else {
-                            setSelectedInterests(selectedInterests.filter(i => i !== 'core'))
-                          }
-                        }}
-                        disabled={isSubscribing}
-                      />
-                      <Label htmlFor="core" className="text-sm">Core Features</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="effects"
-                        checked={selectedInterests.includes('effects')}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedInterests([...selectedInterests, 'effects'])
-                          } else {
-                            setSelectedInterests(selectedInterests.filter(i => i !== 'effects'))
-                          }
-                        }}
-                        disabled={isSubscribing}
-                      />
-                      <Label htmlFor="effects" className="text-sm">Effects & Filters</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="workflow"
-                        checked={selectedInterests.includes('workflow')}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedInterests([...selectedInterests, 'workflow'])
-                          } else {
-                            setSelectedInterests(selectedInterests.filter(i => i !== 'workflow'))
-                          }
-                        }}
-                        disabled={isSubscribing}
-                      />
-                      <Label htmlFor="workflow" className="text-sm">Workflow Tools</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="social"
-                        checked={selectedInterests.includes('social')}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedInterests([...selectedInterests, 'social'])
-                          } else {
-                            setSelectedInterests(selectedInterests.filter(i => i !== 'social'))
-                          }
-                        }}
-                        disabled={isSubscribing}
-                      />
-                      <Label htmlFor="social" className="text-sm">Social Features</Label>
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="font-medium">Personalization & Ads Cookies</span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Used to show you personalized content and ads.</p>
                   </div>
-                </div>
-
-                {subscriptionStatus.type && (
-                  <div className={`p-3 rounded-lg ${
-                    subscriptionStatus.type === 'success' 
-                      ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                      : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
-                  }`}>
-                    {subscriptionStatus.message}
-                  </div>
-                )}
-
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setShowSubscriptionDialog(false)
-                      setEmail('')
-                      setSelectedInterests([])
-                      setSubscriptionStatus({ type: null, message: '' })
-                    }}
-                    className="border-2"
-                    disabled={isSubscribing}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSubscribe}
-                    disabled={isSubscribing || !email}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    {isSubscribing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Subscribing...
-                      </>
-                    ) : (
-                      <>
-                        <Bell className="w-4 h-4 mr-2" />
-                        Subscribe
-                      </>
-                    )}
-                  </Button>
+                  <Switch
+                    id="ads-cookies"
+                    checked={adsConsent}
+                    onCheckedChange={setAdsConsent}
+                  />
                 </div>
               </div>
-            </DialogContent>
-          </Dialog>
+              <div className="flex flex-wrap gap-2 w-full justify-end mt-2">
+                <Button
+                  variant="ghost"
+                  className="text-gray-700 dark:text-gray-200 hover:underline px-2 py-1 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
+                  onClick={() => setShowCookieSettings(false)}
+                  aria-label="Back to summary"
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-gray-300 dark:border-gray-600 px-4 py-2 h-auto focus-visible:ring-2 focus-visible:ring-green-600"
+                  onClick={() => { handleCookieConsent(false); setShowCookieSettings(false); setAnalyticsConsent(false); setAdsConsent(false); }}
+                  aria-label="Decline all cookies"
+                >
+                  Decline All
+                </Button>
+                <Button
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 h-auto font-semibold shadow focus-visible:ring-2 focus-visible:ring-green-600"
+                  onClick={() => {
+                    // Save preferences
+                    handleCookieConsent(analyticsConsent || adsConsent)
+                    setShowCookieSettings(false)
+                  }}
+                  aria-label="Save cookie preferences"
+                >
+                  Save Preferences
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Add a Dialog/modal for the preview image at the end of the main content */}
+        <Dialog open={showPreview} onOpenChange={setShowPreview}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Image Preview</DialogTitle>
+              <DialogDescription>
+                This is a preview of your image with the current settings.
+              </DialogDescription>
+            </DialogHeader>
+            {isPreviewLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+              </div>
+            ) : previewError ? (
+              <div className="text-red-600 text-center py-8">{previewError}</div>
+            ) : previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="max-w-full max-h-[60vh] mx-auto rounded-lg shadow-lg"
+              />
+            ) : (
+              <div className="text-gray-500 text-center py-8">No preview available.</div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Add the Coming Soon modal at the end of the main content */}
+        <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+                <Sparkles className="w-6 h-6 text-blue-600" />
+                Upcoming Features
+              </DialogTitle>
+              <DialogDescription className="text-base">
+                A focused roadmap of features we're developing to enhance your image editing experience.
+              </DialogDescription>
+            </DialogHeader>
+            
+            {/* Feature sections */}
+            <div className="grid sm:grid-cols-2 gap-4 mt-4">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Wand2 className="w-4 h-4 text-blue-600" />
+                  Core Enhancements
+                </h3>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                    Smart Auto-Enhance
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                    Basic Background Removal
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                    Simple Object Removal
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                    Image Upscaling
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Palette className="w-4 h-4 text-indigo-600" />
+                  Color & Effects
+                </h3>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                    Basic Color Grading
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                    Filter Presets
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                    HDR Effect
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full" />
+                    Vintage Effects
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <FileStack className="w-4 h-4 text-teal-600" />
+                  Workflow Tools
+                </h3>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                    Batch Processing
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                    Save & Load Presets
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                    Basic Metadata Editor
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-teal-600 rounded-full" />
+                    Export to Multiple Formats
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-4 bg-slate-50 dark:bg-slate-900/20 rounded-xl">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Share2 className="w-4 h-4 text-slate-600" />
+                  Social & Sharing
+                </h3>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                    Social Media Presets
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                    Share Settings
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                    Quick Export
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-slate-600 rounded-full" />
+                    Watermark Tool
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Development Timeline */}
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900/20 rounded-xl">
+              <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-gray-600" />
+                Development Timeline
+              </h3>
+              <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-medium text-gray-700 dark:text-gray-300">Phase 1 (Next 2 Months)</p>
+                  <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
+                    <li>• Core Enhancements</li>
+                    <li>• Basic Color Tools</li>
+                    <li>• Simple Batch Processing</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-700 dark:text-gray-300">Phase 2 (3-4 Months)</p>
+                  <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
+                    <li>• Advanced Effects</li>
+                    <li>• Social Media Features</li>
+                    <li>• Workflow Improvements</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Info className="w-4 h-4" />
+                <span>Follow our development progress</span>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowComingSoon(false)}
+                  className="border-2"
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    setShowComingSoon(false)
+                    setShowSubscriptionDialog(true)
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  <Bell className="w-4 h-4 mr-2" />
+                  Get Updates
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add new Subscription Dialog */}
+        <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                <Bell className="w-5 h-5 text-blue-600" />
+                Stay Updated
+              </DialogTitle>
+              <DialogDescription>
+                Subscribe to receive updates about new features and improvements.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    setSubscriptionStatus({ type: null, message: '' })
+                  }}
+                  className="mt-1"
+                  disabled={isSubscribing}
+                />
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Interests</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="core"
+                      checked={selectedInterests.includes('core')}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedInterests([...selectedInterests, 'core'])
+                        } else {
+                          setSelectedInterests(selectedInterests.filter(i => i !== 'core'))
+                        }
+                      }}
+                      disabled={isSubscribing}
+                    />
+                    <Label htmlFor="core" className="text-sm">Core Features</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="effects"
+                      checked={selectedInterests.includes('effects')}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedInterests([...selectedInterests, 'effects'])
+                        } else {
+                          setSelectedInterests(selectedInterests.filter(i => i !== 'effects'))
+                        }
+                      }}
+                      disabled={isSubscribing}
+                    />
+                    <Label htmlFor="effects" className="text-sm">Effects & Filters</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="workflow"
+                      checked={selectedInterests.includes('workflow')}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedInterests([...selectedInterests, 'workflow'])
+                        } else {
+                          setSelectedInterests(selectedInterests.filter(i => i !== 'workflow'))
+                        }
+                      }}
+                      disabled={isSubscribing}
+                    />
+                    <Label htmlFor="workflow" className="text-sm">Workflow Tools</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="social"
+                      checked={selectedInterests.includes('social')}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedInterests([...selectedInterests, 'social'])
+                        } else {
+                          setSelectedInterests(selectedInterests.filter(i => i !== 'social'))
+                        }
+                      }}
+                      disabled={isSubscribing}
+                    />
+                    <Label htmlFor="social" className="text-sm">Social Features</Label>
+                  </div>
+                </div>
+              </div>
+
+              {subscriptionStatus.type && (
+                <div className={`p-3 rounded-lg ${
+                  subscriptionStatus.type === 'success' 
+                    ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+                    : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
+                }`}>
+                  {subscriptionStatus.message}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowSubscriptionDialog(false)
+                    setEmail('')
+                    setSelectedInterests([])
+                    setSubscriptionStatus({ type: null, message: '' })
+                  }}
+                  className="border-2"
+                  disabled={isSubscribing}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSubscribe}
+                  disabled={isSubscribing || !email}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {isSubscribing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Subscribing...
+                    </>
+                  ) : (
+                    <>
+                      <Bell className="w-4 h-4 mr-2" />
+                      Subscribe
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
         </main>
       </div>
     </>
