@@ -1,41 +1,56 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import sharp from 'sharp'
-import { writeFile, readFile, unlink } from 'fs/promises'
+import { writeFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { tmpdir } from 'os'
-import { SUPPORTED_FORMATS } from '../services/fileConverter'
-import { FILTERS } from "../constants/imageFilters"
+import crypto from 'crypto'
+import { FILTERS } from '../constants/imageFilters'
+import { SOCIAL_MEDIA_PRESETS } from '../constants/socialMediaPresets'
 
-// File size limits (in bytes)
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
-const MAX_IMAGE_DIMENSION = 8000 // Maximum width or height for images
+// Security constants
+const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+const MAX_DIMENSION = 8000 // Max width/height
+const ALLOWED_FORMATS = ['png', 'jpg', 'jpeg', 'webp', 'avif'] as const
+const MAX_PROCESSING_TIME = 25000 // 25 seconds
 
-// Format mappings for Sharp
-const SHARP_FORMATS = {
-  'jpg': 'jpeg',
-  'jpeg': 'jpeg',
-  'png': 'png',
-  'webp': 'webp',
-  'avif': 'avif',
-  'svg': 'svg'
-} as const
+// Secure temp file handling
+function createSecureTempPath(extension: string): string {
+  const randomName = crypto.randomBytes(16).toString('hex')
+  return join(tmpdir(), `convert_${randomName}.${extension}`)
+}
 
-// Default quality settings
-const DEFAULT_QUALITY = {
-  jpeg: 80,
-  png: 90,
-  webp: 80,
-  avif: 60
+async function validateImageBuffer(buffer: Buffer): Promise<{ isValid: boolean; error?: string; metadata?: any }> {
+  try {
+    const metadata = await sharp(buffer).metadata()
+    
+    if (!metadata.format || !metadata.width || !metadata.height) {
+      return { isValid: false, error: 'Invalid image file' }
+    }
+    
+    if (metadata.width > MAX_DIMENSION || metadata.height > MAX_DIMENSION) {
+      return { 
+        isValid: false, 
+        error: `Image dimensions too large. Maximum ${MAX_DIMENSION}x${MAX_DIMENSION}px` 
+      }
+    }
+    
+    if (!ALLOWED_FORMATS.includes(metadata.format as any)) {
+      return { isValid: false, error: 'Unsupported image format' }
+    }
+    
+    return { isValid: true, metadata }
+    
+  } catch (error) {
+    return { isValid: false, error: 'Corrupted or invalid image file' }
+  }
 }
 
 export interface ConversionResult {
   success: boolean
   error?: string
-  data?: string // base64 encoded data
+  data?: string // base64 encoded
   fileName: string
-  progress?: number
   metadata?: {
     width?: number
     height?: number
@@ -46,399 +61,272 @@ export interface ConversionResult {
   }
 }
 
-export interface ImageOptions {
-  quality?: number
-  width?: number
-  height?: number
-  fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside'
-  rotate?: number
-  flip?: boolean
-  flop?: boolean
-  grayscale?: boolean
-  blur?: number
-  sharpen?: number
-  optimize?: boolean
-  filter?: keyof typeof FILTERS
-  brightness?: number
-  contrast?: number
-  saturation?: number
-  temperature?: number
-  tint?: number
-  crop?: {
-    x: number
-    y: number
-    width: number
-    height: number
-  }
-  text?: {
-    text: string
-    x: number
-    y: number
-    fontSize: number
-    color: string
-  }
-  preserveMetadata?: boolean
-  progressive?: boolean
-  lossless?: boolean
-}
-
-export async function convertFile(
-  formData: FormData,
-  isPreview: boolean = false
-): Promise<ConversionResult> {
-  let inputPath: string | null = null
-  let outputPath: string | null = null
-
+export async function convertFile(formData: FormData): Promise<ConversionResult> {
+  let tempInputPath: string | null = null
+  const startTime = Date.now()
+  
   try {
+    // Extract and validate inputs
     const file = formData.get('file') as File
-    const fromFormat = formData.get('fromFormat') as string
-    const toFormat = formData.get('toFormat') as string
-    const quality = formData.get('quality') ? parseInt(formData.get('quality') as string) : undefined
+    const fromFormat = (formData.get('fromFormat') as string)?.toLowerCase()
+    const toFormat = (formData.get('toFormat') as string)?.toLowerCase()
+    const quality = Math.min(100, Math.max(1, parseInt(formData.get('quality') as string) || 80))
+    
+    // Advanced options
     const width = formData.get('width') ? parseInt(formData.get('width') as string) : undefined
     const height = formData.get('height') ? parseInt(formData.get('height') as string) : undefined
-    const fit = formData.get('fit') as ImageOptions['fit'] || 'inside'
+    const fit = (formData.get('fit') as string) || 'inside'
     const rotate = formData.get('rotate') ? parseInt(formData.get('rotate') as string) : undefined
     const flip = formData.get('flip') === 'true'
     const flop = formData.get('flop') === 'true'
     const grayscale = formData.get('grayscale') === 'true'
     const blur = formData.get('blur') ? parseFloat(formData.get('blur') as string) : undefined
     const sharpen = formData.get('sharpen') ? parseFloat(formData.get('sharpen') as string) : undefined
-    const optimize = formData.get('optimize') === 'true'
-    const filter = formData.get('filter') as keyof typeof FILTERS
     const brightness = formData.get('brightness') ? parseFloat(formData.get('brightness') as string) : undefined
     const contrast = formData.get('contrast') ? parseFloat(formData.get('contrast') as string) : undefined
     const saturation = formData.get('saturation') ? parseFloat(formData.get('saturation') as string) : undefined
-    const temperature = formData.get('temperature') ? parseFloat(formData.get('temperature') as string) : undefined
-    const tint = formData.get('tint') ? parseFloat(formData.get('tint') as string) : undefined
-    const preserveMetadata = formData.get('preserveMetadata') === 'true'
+    const filter = (formData.get('filter') as string) || 'none'
     const progressive = formData.get('progressive') === 'true'
     const lossless = formData.get('lossless') === 'true'
-
-    // For preview, we'll use a lower quality and skip some optimizations
-    const isPreviewMode = isPreview || formData.get('isPreview') === 'true'
-
-    if (!file || !fromFormat) {
+    const preserveMetadata = formData.get('preserveMetadata') === 'true'
+    
+    // Social media preset
+    const socialPlatform = formData.get('socialPlatform') as string
+    const socialPreset = formData.get('socialPreset') as string
+    
+    if (!file || !fromFormat || !toFormat) {
       return {
         success: false,
-        error: 'Missing required fields: file and fromFormat are required',
+        error: 'Missing required parameters',
         fileName: file?.name || 'unknown'
       }
     }
-
-    // For preview mode, if no toFormat is specified, use the same as fromFormat
-    const targetFormat = toFormat || fromFormat
-
-    // Check file size
+    
+    // Validate file size
     if (file.size > MAX_FILE_SIZE) {
       return {
         success: false,
-        error: `File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds the maximum limit of ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
+        error: `File too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
         fileName: file.name
       }
     }
-
-    // Validate formats
-    if (!SUPPORTED_FORMATS.includes(fromFormat.toLowerCase() as typeof SUPPORTED_FORMATS[number]) || 
-        !SUPPORTED_FORMATS.includes(targetFormat.toLowerCase() as typeof SUPPORTED_FORMATS[number])) {
+    
+    // Convert file to buffer
+    const inputBuffer = Buffer.from(await file.arrayBuffer())
+    
+    // Validate image
+    const validation = await validateImageBuffer(inputBuffer)
+    if (!validation.isValid) {
       return {
         success: false,
-        error: `Unsupported image format. Supported formats are: ${SUPPORTED_FORMATS.join(', ')}`,
+        error: validation.error || 'Invalid image',
         fileName: file.name
       }
     }
-
-    // Create temporary files
-    const tempDir = tmpdir()
-    const timestamp = Date.now()
-    inputPath = join(tempDir, `${timestamp}-${file.name}`)
-    outputPath = join(tempDir, `${timestamp}-${file.name.split('.')[0]}.${targetFormat}`)
-
-    // Write uploaded file to temp directory
-    const buffer = Buffer.from(await file.arrayBuffer())
-    await writeFile(inputPath, buffer)
-
-    try {
-      // Get the correct Sharp format identifier
-      const sharpFormat = SHARP_FORMATS[targetFormat.toLowerCase() as keyof typeof SHARP_FORMATS]
-      if (!sharpFormat) {
-        throw new Error(`Unsupported image format: ${targetFormat}`)
+    
+    // Create secure temp file for processing
+    tempInputPath = createSecureTempPath(fromFormat)
+    await writeFile(tempInputPath, inputBuffer)
+    
+    // Set up Sharp processing with timeout
+    const processImage = async (): Promise<Buffer> => {
+      let sharpInstance = sharp(tempInputPath!)
+        .timeout({ seconds: Math.floor(MAX_PROCESSING_TIME / 1000) })
+      
+      // Apply social media preset if specified
+      let targetWidth = width
+      let targetHeight = height
+      let targetQuality = quality
+      
+      if (socialPlatform && socialPreset && SOCIAL_MEDIA_PRESETS[socialPlatform]?.[socialPreset]) {
+        const preset = SOCIAL_MEDIA_PRESETS[socialPlatform][socialPreset]
+        targetWidth = preset.width
+        targetHeight = preset.height
+        targetQuality = preset.quality
       }
-
-      // Create Sharp instance
-      let sharpInstance = sharp(buffer)
-
-      // Get image metadata
-      const metadata = await sharpInstance.metadata()
-
-      // Validate image format
-      if (!metadata.format || !SUPPORTED_FORMATS.includes(metadata.format as typeof SUPPORTED_FORMATS[number])) {
-        throw new Error('Input file contains unsupported image format')
-      }
-
-      // Validate image dimensions
-      if (metadata.width && metadata.width > MAX_IMAGE_DIMENSION) {
-        throw new Error(`Image width (${metadata.width}px) exceeds maximum allowed dimension of ${MAX_IMAGE_DIMENSION}px`)
-      }
-      if (metadata.height && metadata.height > MAX_IMAGE_DIMENSION) {
-        throw new Error(`Image height (${metadata.height}px) exceeds maximum allowed dimension of ${MAX_IMAGE_DIMENSION}px`)
-      }
-
+      
       // Apply transformations
       if (rotate) {
         sharpInstance = sharpInstance.rotate(rotate)
       }
+      
       if (flip) {
         sharpInstance = sharpInstance.flip()
       }
+      
       if (flop) {
         sharpInstance = sharpInstance.flop()
       }
-      if (grayscale) {
-        sharpInstance = sharpInstance.grayscale()
+      
+      // Apply resizing
+      if (targetWidth || targetHeight) {
+        sharpInstance = sharpInstance.resize({
+          width: targetWidth,
+          height: targetHeight,
+          fit: fit as any,
+          withoutEnlargement: true
+        })
       }
-      if (blur) {
-        sharpInstance = sharpInstance.blur(blur)
+      
+      // Apply filters
+      if (filter && filter !== 'none' && FILTERS[filter]) {
+        const filterConfig = FILTERS[filter].sharpConfig
+        
+        if (filterConfig.modulate) {
+          sharpInstance = sharpInstance.modulate(filterConfig.modulate)
+        }
+        
+        if (filterConfig.tint) {
+          sharpInstance = sharpInstance.tint(filterConfig.tint)
+        }
+        
+        if (filterConfig.gamma) {
+          sharpInstance = sharpInstance.gamma(filterConfig.gamma)
+        }
+        
+        if (filterConfig.linear) {
+          sharpInstance = sharpInstance.linear(filterConfig.linear.a, filterConfig.linear.b)
+        }
       }
-      if (sharpen) {
-        sharpInstance = sharpInstance.sharpen(sharpen)
-      }
-
-      // Apply color adjustments
-      if (brightness || contrast || saturation) {
-        const modulateOptions: {
-          brightness?: number
-          saturation?: number
-          lightness?: number
-        } = {}
-
+      
+      // Apply manual adjustments (override filter if specified)
+      if (brightness !== undefined || contrast !== undefined || saturation !== undefined) {
+        const modulateOptions: any = {}
+        
         if (brightness !== undefined) {
-          modulateOptions.brightness = brightness / 100 + 1
+          modulateOptions.brightness = (brightness / 100) + 1
         }
         if (saturation !== undefined) {
-          modulateOptions.saturation = saturation / 100 + 1
+          modulateOptions.saturation = (saturation / 100) + 1
         }
         if (contrast !== undefined) {
-          modulateOptions.lightness = contrast / 100 + 1
+          modulateOptions.lightness = (contrast / 100) + 1
         }
-
-        // Only call modulate if we have at least one valid option
+        
         if (Object.keys(modulateOptions).length > 0) {
           sharpInstance = sharpInstance.modulate(modulateOptions)
         }
       }
-
-      // Apply filters
-      if (filter && filter !== 'none') {
-        switch (filter) {
-          case 'sepia':
-            sharpInstance = sharpInstance.modulate({ saturation: 0.5 }).tint('#FFE4C4')
-            break
-          case 'vintage':
-            sharpInstance = sharpInstance.modulate({ brightness: 1.1, saturation: 0.8 }).tint('#E6D5AC')
-            break
-          case 'cool':
-            sharpInstance = sharpInstance.modulate({ saturation: 1.2 }).tint('#B3E0FF')
-            break
-          case 'warm':
-            sharpInstance = sharpInstance.modulate({ saturation: 1.2 }).tint('#FFE4B3')
-            break
-          case 'dramatic':
-            sharpInstance = sharpInstance.modulate({ 
-              brightness: 0.9, 
-              saturation: 1.1,
-              lightness: 1.2 
-            })
-            break
-        }
+      
+      if (grayscale) {
+        sharpInstance = sharpInstance.grayscale()
       }
-
-      // Apply resizing if dimensions are provided
-      if (width || height) {
-        sharpInstance = sharpInstance.resize({
-          width: width,
-          height: height,
-          fit: fit,
-          withoutEnlargement: true
-        })
+      
+      if (blur) {
+        sharpInstance = sharpInstance.blur(blur)
       }
-
-      // Apply format-specific optimizations
-      if (optimize) {
-        switch (targetFormat) {
-          case 'svg':
-            // For SVG, we'll just pass through the file as is
-            // since SVG is already a vector format and doesn't need optimization
-            sharpInstance = sharpInstance
-            break
-          case 'jpeg':
-            sharpInstance = sharpInstance.jpeg({
-              quality: quality || 80,
-              progressive: progressive || false,
-              chromaSubsampling: '4:4:4',
-              mozjpeg: true,
-              trellisQuantisation: true,
-              overshootDeringing: true,
-              optimizeScans: true,
-              // Social media specific optimizations
-              ...(formData.get('socialMediaPlatform') === 'instagram' && {
-                quality: 92,
-                chromaSubsampling: '4:4:4'
-              }),
-              ...(formData.get('socialMediaPlatform') === 'facebook' && {
-                quality: 85,
-                chromaSubsampling: '4:2:0'
-              }),
-              ...(formData.get('socialMediaPlatform') === 'twitter' && {
-                quality: 90,
-                chromaSubsampling: '4:2:0'
-              })
-            })
-            break
-          case 'png':
-            sharpInstance = sharpInstance.png({
-              compressionLevel: 9,
-              effort: 10,
-              palette: true,
-              colors: 256,
-              dither: 1.0,
-              progressive: progressive || false,
-              // Social media specific optimizations
-              ...(formData.get('socialMediaPlatform') === 'instagram' && {
-                compressionLevel: 8,
-                effort: 9
-              }),
-              ...(formData.get('socialMediaPlatform') === 'facebook' && {
-                compressionLevel: 7,
-                effort: 8
-              }),
-              ...(formData.get('socialMediaPlatform') === 'twitter' && {
-                compressionLevel: 8,
-                effort: 9
-              })
-            })
-            break
-          case 'webp':
-            sharpInstance = sharpInstance.webp({
-              quality: quality || 80,
-              lossless: lossless || false,
-              nearLossless: false,
-              smartSubsample: true,
-              effort: 6,
-              // Social media specific optimizations
-              ...(formData.get('socialMediaPlatform') === 'instagram' && {
-                quality: 90,
-                effort: 5
-              }),
-              ...(formData.get('socialMediaPlatform') === 'facebook' && {
-                quality: 85,
-                effort: 4
-              }),
-              ...(formData.get('socialMediaPlatform') === 'twitter' && {
-                quality: 88,
-                effort: 5
-              })
-            })
-            break
-          case 'avif':
-            sharpInstance = sharpInstance.avif({
-              quality: quality || 80,
-              lossless: lossless || false,
-              speed: 5,
-              chromaSubsampling: '4:2:0',
-              // Social media specific optimizations
-              ...(formData.get('socialMediaPlatform') === 'instagram' && {
-                quality: 90,
-                speed: 4
-              }),
-              ...(formData.get('socialMediaPlatform') === 'facebook' && {
-                quality: 85,
-                speed: 5
-              }),
-              ...(formData.get('socialMediaPlatform') === 'twitter' && {
-                quality: 88,
-                speed: 4
-              })
-            })
-            break
-        }
-      } else {
-        // Apply basic format settings even when optimize is false
-        switch (targetFormat) {
-          case 'svg':
-            // For SVG, we'll just pass through the file as is
-            sharpInstance = sharpInstance
-            break
-          case 'jpeg':
-            sharpInstance = sharpInstance.jpeg({
-              quality: quality || 80,
-              progressive: progressive || false
-            })
-            break
-          case 'png':
-            sharpInstance = sharpInstance.png({
-              progressive: progressive || false
-            })
-            break
-          case 'webp':
-            sharpInstance = sharpInstance.webp({
-              quality: quality || 80,
-              lossless: lossless || false
-            })
-            break
-          case 'avif':
-            sharpInstance = sharpInstance.avif({
-              quality: quality || 80,
-              lossless: lossless || false
-            })
-            break
-        }
+      
+      if (sharpen) {
+        sharpInstance = sharpInstance.sharpen(sharpen)
       }
-
-      // Process the image
-      const outputBuffer = await sharpInstance.toBuffer()
-      const outputMetadata = await sharpInstance.metadata()
-
-      // Calculate compression ratio
-      const originalSize = buffer.length
-      const newSize = outputBuffer.length
-      const compressionRatio = originalSize > 0 ? (1 - (newSize / originalSize)) * 100 : 0
-
-      return {
-        success: true,
-        data: outputBuffer.toString('base64'),
-        fileName: `${file.name.split('.')[0]}.${targetFormat}`,
-        progress: 100,
-        metadata: {
-          width: outputMetadata.width,
-          height: outputMetadata.height,
-          format: outputMetadata.format,
-          size: newSize,
-          originalSize: originalSize,
-          compressionRatio: compressionRatio
-        }
+      
+      // Apply format-specific conversion
+      switch (toFormat) {
+        case 'jpg':
+        case 'jpeg':
+          sharpInstance = sharpInstance.jpeg({ 
+            quality: targetQuality,
+            mozjpeg: true,
+            progressive: progressive
+          })
+          break
+          
+        case 'png':
+          sharpInstance = sharpInstance.png({ 
+            compressionLevel: 9,
+            progressive: progressive,
+            palette: !preserveMetadata
+          })
+          break
+          
+        case 'webp':
+          sharpInstance = sharpInstance.webp({ 
+            quality: targetQuality,
+            lossless: lossless,
+            effort: 6
+          })
+          break
+          
+        case 'avif':
+          sharpInstance = sharpInstance.avif({ 
+            quality: targetQuality,
+            lossless: lossless,
+            speed: 5
+          })
+          break
+          
+        default:
+          throw new Error(`Unsupported output format: ${toFormat}`)
       }
-    } catch (error) {
-      console.error('Image processing error:', error)
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Failed to process image',
-        fileName: file.name
+      
+      // Remove metadata if not preserving
+      if (!preserveMetadata) {
+        sharpInstance = sharpInstance.withMetadata(false)
+      }
+      
+      return await sharpInstance.toBuffer()
+    }
+    
+    // Process with timeout
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Image processing timeout')), MAX_PROCESSING_TIME)
+    })
+    
+    const outputBuffer = await Promise.race([processImage(), timeoutPromise])
+    
+    // Get output metadata
+    const outputMetadata = await sharp(outputBuffer).metadata()
+    
+    // Calculate compression ratio
+    const originalSize = inputBuffer.length
+    const newSize = outputBuffer.length
+    const compressionRatio = originalSize > 0 ? ((originalSize - newSize) / originalSize) * 100 : 0
+    
+    // Validate output
+    if (!outputBuffer || outputBuffer.length === 0) {
+      throw new Error('Conversion produced empty result')
+    }
+    
+    if (outputBuffer.length > MAX_FILE_SIZE) {
+      throw new Error('Converted file exceeds size limit')
+    }
+    
+    return {
+      success: true,
+      data: outputBuffer.toString('base64'),
+      fileName: `${file.name.split('.')[0]}.${toFormat}`,
+      metadata: {
+        width: outputMetadata.width,
+        height: outputMetadata.height,
+        format: outputMetadata.format,
+        size: newSize,
+        originalSize,
+        compressionRatio: Math.round(compressionRatio * 100) / 100
       }
     }
+    
   } catch (error) {
-    console.error('File conversion error:', error)
+    console.error('Server conversion error:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      fileName: (formData.get('file') as File)?.name || 'unknown',
+      processingTime: Date.now() - startTime,
+      timestamp: new Date().toISOString()
+    })
+    
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Conversion failed',
-      fileName: 'unknown'
+      fileName: (formData.get('file') as File)?.name || 'unknown'
     }
+    
   } finally {
-    // Clean up temporary files
-    try {
-      if (inputPath) await unlink(inputPath).catch(() => {})
-      if (outputPath) await unlink(outputPath).catch(() => {})
-    } catch (cleanupError) {
-      console.error('Error cleaning up temporary files:', cleanupError)
+    // Cleanup: Always remove temp files
+    if (tempInputPath) {
+      try {
+        await unlink(tempInputPath)
+      } catch (cleanupError) {
+        console.error('Temp file cleanup failed:', cleanupError)
+      }
     }
   }
-} 
+}
