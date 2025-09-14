@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { convertFile } from '@/app/actions/fileConverter'
 import { headers } from 'next/headers'
+import { UsageTracker } from '@/lib/usage'
+import { getPlan, canUseFeature } from '@/lib/pricing'
 
 // Security constants
 const MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB hard limit
@@ -37,13 +39,11 @@ function checkRateLimit(key: string): boolean {
 }
 
 function validateFileType(file: File): boolean {
-  // Check file extension
   const extension = file.name.toLowerCase().split('.').pop()
   if (!extension || !ALLOWED_FORMATS.includes(extension)) {
     return false
   }
   
-  // Basic MIME type check
   const allowedMimeTypes = [
     'image/png',
     'image/jpeg', 
@@ -53,53 +53,6 @@ function validateFileType(file: File): boolean {
   ]
   
   return allowedMimeTypes.includes(file.type)
-}
-
-function validateFormData(formData: FormData): { 
-  isValid: boolean
-  error?: string
-  file?: File
-  fromFormat?: string
-  toFormat?: string
-} {
-  const file = formData.get('file') as File
-  const fromFormat = formData.get('fromFormat') as string
-  const toFormat = formData.get('toFormat') as string
-  
-  // Check if file exists
-  if (!file || !(file instanceof File)) {
-    return { isValid: false, error: 'No file provided' }
-  }
-  
-  // Check file size
-  if (file.size === 0) {
-    return { isValid: false, error: 'Empty file provided' }
-  }
-  
-  if (file.size > MAX_FILE_SIZE) {
-    return { isValid: false, error: `File too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB` }
-  }
-  
-  // Validate file type
-  if (!validateFileType(file)) {
-    return { isValid: false, error: 'Invalid file type. Only PNG, JPG, WebP, and AVIF are allowed' }
-  }
-  
-  // Validate formats
-  if (!fromFormat || !ALLOWED_FORMATS.includes(fromFormat.toLowerCase())) {
-    return { isValid: false, error: 'Invalid source format' }
-  }
-  
-  if (!toFormat || !ALLOWED_FORMATS.includes(toFormat.toLowerCase())) {
-    return { isValid: false, error: 'Invalid target format' }
-  }
-  
-  return { 
-    isValid: true, 
-    file, 
-    fromFormat: fromFormat.toLowerCase(), 
-    toFormat: toFormat.toLowerCase() 
-  }
 }
 
 export async function POST(request: NextRequest) {
@@ -113,9 +66,32 @@ export async function POST(request: NextRequest) {
         { 
           success: false, 
           error: 'Rate limit exceeded. Please try again later.',
-          fileName: 'unknown'
+          fileName: 'unknown',
+          upgrade: true
         },
         { status: 429 }
+      )
+    }
+    
+    // Get user/session info
+    const userId = request.headers.get('x-user-id') // From auth
+    const sessionId = request.headers.get('x-session-id') || 'anonymous'
+    
+    // Check usage limits
+    const usageTracker = UsageTracker.getInstance()
+    const usageCheck = await usageTracker.canConvert(userId || undefined, sessionId)
+    
+    if (!usageCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Usage limit exceeded. You have ${usageCheck.remaining} conversions remaining on the ${usageCheck.plan} plan.`,
+          fileName: 'unknown',
+          upgrade: true,
+          plan: usageCheck.plan,
+          remaining: usageCheck.remaining
+        },
+        { status: 402 } // Payment Required
       )
     }
     
@@ -132,38 +108,98 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Parse and validate form data
+    // Parse form data
     const formData = await request.formData()
-    const validation = validateFormData(formData)
+    const file = formData.get('file') as File
     
-    if (!validation.isValid) {
+    if (!file || !(file instanceof File)) {
       return NextResponse.json(
         { 
           success: false, 
-          error: validation.error,
-          fileName: validation.file?.name || 'unknown'
+          error: 'No file provided',
+          fileName: 'unknown'
         },
         { status: 400 }
       )
     }
     
-    // Set processing timeout
+    // Check file size limits based on plan
+    const userPlan = getPlan(usageCheck.plan)
+    const maxFileSize = userPlan.limits.fileSize * 1024 * 1024 // Convert MB to bytes
+    
+    if (file.size > maxFileSize) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `File too large. Maximum size for ${userPlan.name} plan is ${userPlan.limits.fileSize}MB`,
+          fileName: file.name,
+          upgrade: true,
+          plan: usageCheck.plan
+        },
+        { status: 413 }
+      )
+    }
+    
+    // Validate file type
+    if (!validateFileType(file)) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Invalid file type. Only PNG, JPG, WebP, and AVIF are allowed',
+          fileName: file.name
+        },
+        { status: 400 }
+      )
+    }
+    
+    // Check creative effects permission
+    const creativeEffect = formData.get('creativeEffect') as string
+    if (creativeEffect && creativeEffect !== 'none' && !canUseFeature(usageCheck.plan, 'creativeEffects')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Creative effects require Pro plan or higher',
+          fileName: file.name,
+          upgrade: true,
+          plan: usageCheck.plan
+        },
+        { status: 402 }
+      )
+    }
+    
+    // Process file with timeout
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => reject(new Error('Processing timeout')), MAX_PROCESSING_TIME)
     })
     
-    // Process file with timeout
     const conversionPromise = convertFile(formData)
     const result = await Promise.race([conversionPromise, timeoutPromise])
     
-    // Add processing metrics
-    const processingTime = Date.now() - startTime
-    
     if (typeof result === 'object' && result !== null && 'success' in result) {
+      // Increment usage on successful conversion
+      if (result.success) {
+        await usageTracker.incrementUsage(userId || undefined, sessionId)
+        
+        // Add watermark for free users
+        if (usageCheck.plan === 'free' && !canUseFeature(usageCheck.plan, 'watermarkRemoval')) {
+          // Note: Watermark would be added during processing
+          // For now, we'll add a flag to indicate watermarked output
+          (result as any).watermarked = true
+        }
+      }
+      
+      // Add usage info to response
+      const updatedUsage = await usageTracker.canConvert(userId || undefined, sessionId)
+      
       return NextResponse.json({
         ...result,
-        processingTime,
-        serverProcessed: true
+        processingTime: Date.now() - startTime,
+        serverProcessed: true,
+        usage: {
+          plan: updatedUsage.plan,
+          remaining: updatedUsage.remaining,
+          unlimited: updatedUsage.remaining === -1
+        }
       })
     }
     
@@ -177,10 +213,9 @@ export async function POST(request: NextRequest) {
       processingTime: Date.now() - startTime
     })
     
-    // Don't expose internal errors to client
     const isTimeout = error instanceof Error && error.message === 'Processing timeout'
     const errorMessage = isTimeout 
-      ? 'File processing timed out. Please try with a smaller file.'
+      ? 'File processing timed out. Please try with a smaller file or upgrade for faster processing.'
       : 'Internal server error during conversion'
     
     return NextResponse.json(
@@ -188,14 +223,14 @@ export async function POST(request: NextRequest) {
         success: false, 
         error: errorMessage,
         fileName: 'unknown',
-        serverProcessed: true
+        serverProcessed: true,
+        upgrade: isTimeout
       },
       { status: isTimeout ? 408 : 500 }
     )
   }
 }
 
-// Prevent GET requests
 export async function GET() {
   return NextResponse.json(
     { error: 'Method not allowed' },

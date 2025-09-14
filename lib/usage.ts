@@ -1,131 +1,114 @@
-import { prisma } from './prisma'
-import { PRICING_PLANS } from './stripe'
+interface UsageRecord {
+  userId?: string
+  sessionId: string
+  conversions: number
+  lastReset: Date
+  plan: string
+}
 
-export class UsageService {
-  private static instance: UsageService
+// Simple in-memory storage (use Redis/Database in production)
+const usageStore = new Map<string, UsageRecord>()
+
+export class UsageTracker {
+  private static instance: UsageTracker
   
-  static getInstance(): UsageService {
-    if (!UsageService.instance) {
-      UsageService.instance = new UsageService()
+  static getInstance(): UsageTracker {
+    if (!UsageTracker.instance) {
+      UsageTracker.instance = new UsageTracker()
     }
-    return UsageService.instance
+    return UsageTracker.instance
   }
 
-  async checkUsageLimit(userId: string | null): Promise<{
-    canConvert: boolean
-    remainingConversions: number
-    plan: 'FREE' | 'PRO'
-    resetTime?: Date
-  }> {
-    if (!userId) {
-      // Anonymous user - no tracking, just deny
-      return {
-        canConvert: false,
-        remainingConversions: 0,
-        plan: 'FREE'
-      }
-    }
+  private getKey(userId?: string, sessionId?: string): string {
+    return userId || sessionId || 'anonymous'
+  }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { isPro: true }
-    })
-
-    const plan = user?.isPro ? 'PRO' : 'FREE'
-    const dailyLimit = PRICING_PLANS[plan].dailyConversions
-
-    // Get today's conversions
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+  async getUsage(userId?: string, sessionId?: string): Promise<UsageRecord> {
+    const key = this.getKey(userId, sessionId)
+    const existing = usageStore.get(key)
     
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-
-    const todayConversions = await prisma.conversion.count({
-      where: {
+    if (!existing) {
+      const newRecord: UsageRecord = {
         userId,
-        createdAt: {
-          gte: today,
-          lt: tomorrow
-        }
+        sessionId: sessionId || 'anonymous',
+        conversions: 0,
+        lastReset: new Date(),
+        plan: userId ? 'free' : 'free'
       }
-    })
+      usageStore.set(key, newRecord)
+      return newRecord
+    }
+    
+    // Reset daily usage for free users
+    if (existing.plan === 'free' && this.shouldResetDaily(existing.lastReset)) {
+      existing.conversions = 0
+      existing.lastReset = new Date()
+      usageStore.set(key, existing)
+    }
+    
+    return existing
+  }
 
-    const remainingConversions = Math.max(0, dailyLimit - todayConversions)
+  async incrementUsage(userId?: string, sessionId?: string): Promise<boolean> {
+    const usage = await this.getUsage(userId, sessionId)
+    const key = this.getKey(userId, sessionId)
+    
+    // Check limits
+    const { PRICING_PLANS } = await import('./pricing')
+    const plan = PRICING_PLANS[usage.plan]
+    
+    if (plan.limits.conversions !== -1 && usage.conversions >= plan.limits.conversions) {
+      return false // Limit exceeded
+    }
+    
+    usage.conversions++
+    usageStore.set(key, usage)
+    return true
+  }
+
+  async canConvert(userId?: string, sessionId?: string): Promise<{ allowed: boolean; remaining: number; plan: string }> {
+    const usage = await this.getUsage(userId, sessionId)
+    const { PRICING_PLANS } = await import('./pricing')
+    const plan = PRICING_PLANS[usage.plan]
+    
+    const allowed = plan.limits.conversions === -1 || usage.conversions < plan.limits.conversions
+    const remaining = plan.limits.conversions === -1 ? -1 : Math.max(0, plan.limits.conversions - usage.conversions)
     
     return {
-      canConvert: remainingConversions > 0,
-      remainingConversions,
-      plan,
-      resetTime: tomorrow
+      allowed,
+      remaining,
+      plan: usage.plan
     }
   }
 
-  async recordConversion(
-    userId: string | null,
-    originalFormat: string,
-    targetFormat: string,
-    fileSize: number,
-    processingTime: number,
-    aiFeatures: boolean = false
-  ): Promise<void> {
-    if (!userId) return
-
-    await prisma.conversion.create({
-      data: {
-        userId,
-        originalFormat,
-        targetFormat,
-        fileSize,
-        processingTime,
-        aiFeatures
-      }
-    })
+  async updatePlan(userId: string, newPlan: string): Promise<void> {
+    const usage = await this.getUsage(userId)
+    usage.plan = newPlan
+    usage.conversions = 0 // Reset usage when upgrading
+    usage.lastReset = new Date()
+    usageStore.set(userId, usage)
   }
 
-  async getUserStats(userId: string): Promise<{
-    totalConversions: number
-    todayConversions: number
-    averageFileSize: number
-    mostUsedFormat: string
-  }> {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+  private shouldResetDaily(lastReset: Date): boolean {
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - lastReset.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays >= 1
+  }
+
+  // Get usage stats for admin
+  async getStats(): Promise<{ totalUsers: number; totalConversions: number; planDistribution: Record<string, number> }> {
+    const stats = {
+      totalUsers: usageStore.size,
+      totalConversions: 0,
+      planDistribution: {} as Record<string, number>
+    }
     
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-
-    const [totalConversions, todayConversions, avgFileSize, formatStats] = await Promise.all([
-      prisma.conversion.count({
-        where: { userId }
-      }),
-      prisma.conversion.count({
-        where: {
-          userId,
-          createdAt: {
-            gte: today,
-            lt: tomorrow
-          }
-        }
-      }),
-      prisma.conversion.aggregate({
-        where: { userId },
-        _avg: { fileSize: true }
-      }),
-      prisma.conversion.groupBy({
-        by: ['targetFormat'],
-        where: { userId },
-        _count: { targetFormat: true },
-        orderBy: { _count: { targetFormat: 'desc' } },
-        take: 1
-      })
-    ])
-
-    return {
-      totalConversions,
-      todayConversions,
-      averageFileSize: Math.round(avgFileSize._avg.fileSize || 0),
-      mostUsedFormat: formatStats[0]?.targetFormat || 'png'
+    for (const usage of usageStore.values()) {
+      stats.totalConversions += usage.conversions
+      stats.planDistribution[usage.plan] = (stats.planDistribution[usage.plan] || 0) + 1
     }
+    
+    return stats
   }
 }

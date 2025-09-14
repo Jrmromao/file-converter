@@ -35,10 +35,20 @@ export default function BatchProcessor({ onClose }: BatchProcessorProps) {
     
     if (selectedFiles.length === 0) return
     
-    if (selectedFiles.length > 10) {
+    // Check plan limits
+    const userPlan = 'free' // TODO: Get from user context
+    const planLimits = {
+      free: 1,
+      pro: 10,
+      business: 100
+    }
+    
+    const maxFiles = planLimits[userPlan as keyof typeof planLimits]
+    
+    if (selectedFiles.length > maxFiles) {
       toast({
-        title: "Too many files",
-        description: "Maximum 10 files allowed for batch processing",
+        title: "File limit exceeded",
+        description: `${userPlan} plan allows ${maxFiles} files. Upgrade for batch processing.`,
         variant: "destructive"
       })
       return
@@ -60,69 +70,84 @@ export default function BatchProcessor({ onClose }: BatchProcessorProps) {
   const processFiles = async () => {
     if (files.length === 0) return
 
+    // Check plan limits before processing
+    const userPlan = 'free' // TODO: Get from user context
+    const planLimits = {
+      free: { batchSize: 1, conversions: 5 },
+      pro: { batchSize: 10, conversions: 500 },
+      business: { batchSize: 100, conversions: -1 }
+    }
+    
+    const currentPlan = planLimits[userPlan as keyof typeof planLimits]
+    
+    if (files.length > currentPlan.batchSize) {
+      toast({
+        title: "Batch limit exceeded",
+        description: `${userPlan} plan allows ${currentPlan.batchSize} files per batch. Upgrade for more.`,
+        variant: "destructive"
+      })
+      return
+    }
+
     setIsProcessing(true)
     
     try {
-      // Process files sequentially to avoid overwhelming the server
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        
-        // Update status to processing
-        setFiles(prev => prev.map(f => 
-          f.id === file.id 
-            ? { ...f, status: 'processing', progress: 0 }
-            : f
-        ))
+      // Prepare form data for batch API
+      const formData = new FormData()
+      files.forEach(file => {
+        formData.append('files', file.file)
+      })
+      formData.append('outputFormat', outputFormat)
+      formData.append('quality', quality.toString())
 
-        try {
-          // Create FormData for this file
-          const formData = new FormData()
-          formData.append('file', file.file)
-          formData.append('fromFormat', file.file.name.split('.').pop()?.toLowerCase() || 'png')
-          formData.append('toFormat', outputFormat)
-          formData.append('quality', quality.toString())
-
-          // Simulate progress updates
-          const progressInterval = setInterval(() => {
-            setFiles(prev => prev.map(f => 
-              f.id === file.id && f.status === 'processing'
-                ? { ...f, progress: Math.min((f.progress || 0) + 10, 90) }
-                : f
-            ))
-          }, 200)
-
-          // Process the file
-          const result = await FileConverterService.convertFile(formData)
-          
-          clearInterval(progressInterval)
-
-          if (result.success) {
-            setFiles(prev => prev.map(f => 
-              f.id === file.id 
-                ? { ...f, status: 'completed', progress: 100, result }
-                : f
-            ))
-          } else {
-            throw new Error(result.error || 'Conversion failed')
-          }
-
-        } catch (error) {
-          setFiles(prev => prev.map(f => 
-            f.id === file.id 
-              ? { 
-                  ...f, 
-                  status: 'error', 
-                  error: error instanceof Error ? error.message : 'Unknown error'
-                }
-              : f
-          ))
+      // Call batch conversion API
+      const response = await fetch('/api/batch-convert', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
         }
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        if (response.status === 402) {
+          // Payment required - show upgrade modal
+          toast({
+            title: "Upgrade Required",
+            description: result.error,
+            variant: "destructive"
+          })
+          return
+        }
+        throw new Error(result.error || 'Batch conversion failed')
       }
 
-      toast({
-        title: "Batch processing completed",
-        description: `Processed ${files.filter(f => f.status === 'completed').length} files successfully`
-      })
+      // Update file statuses based on results
+      if (result.success && result.results) {
+        setFiles(prev => prev.map(file => {
+          const apiResult = result.results.find((r: any) => r.fileName === file.file.name)
+          if (apiResult) {
+            return {
+              ...file,
+              status: apiResult.success ? 'completed' : 'error',
+              result: apiResult.success ? {
+                data: apiResult.data,
+                fileName: apiResult.convertedFileName,
+                metadata: apiResult.metadata
+              } : undefined,
+              error: apiResult.success ? undefined : apiResult.error
+            }
+          }
+          return file
+        }))
+
+        toast({
+          title: "Batch processing completed",
+          description: `${result.summary.successful} files converted successfully, ${result.summary.failed} failed`
+        })
+      }
 
     } catch (error) {
       toast({
@@ -228,6 +253,18 @@ export default function BatchProcessor({ onClose }: BatchProcessorProps) {
       <CardContent className="p-6 space-y-6">
         {/* Upload Section */}
         <div className="space-y-4">
+          {/* Plan Limits Info */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-blue-700 dark:text-blue-300">
+                Free Plan: 1 file per batch • Pro: 10 files • Business: 100 files
+              </span>
+              <Button variant="link" size="sm" className="text-blue-600 p-0 h-auto">
+                Upgrade
+              </Button>
+            </div>
+          </div>
+          
           <div className="flex gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium mb-2">Select Images</label>
@@ -239,6 +276,9 @@ export default function BatchProcessor({ onClose }: BatchProcessorProps) {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 disabled={isProcessing}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Maximum {files.length >= 1 ? '1 file (Free plan)' : '10 files'} at once
+              </p>
             </div>
             <div className="w-32">
               <label className="block text-sm font-medium mb-2">Format</label>
