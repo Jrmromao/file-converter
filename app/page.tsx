@@ -452,25 +452,49 @@ export default function FileConverter() {
     }
   }
 
-  const handleDownload = () => {
-    if (!convertedFileData || !convertedFileType || !convertedFile) return
-    const binaryString = atob(convertedFileData)
-    const bytes = new Uint8Array(binaryString.length)
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i)
+  const handleDownload = async () => {
+    if (!convertedFileData || !convertedFileType || !convertedFile) {
+      toast({
+        title: "Download Error",
+        description: "No converted file available for download",
+        variant: "destructive"
+      })
+      return
     }
-    const mimeType = `image/${convertedFileType === 'jpg' ? 'jpeg' : convertedFileType}`
-    const blob = new Blob([bytes], { type: mimeType })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = convertedFile
-    document.body.appendChild(link)
-    link.click()
-    setTimeout(() => {
-      URL.revokeObjectURL(url)
-      document.body.removeChild(link)
-    }, 1000)
+
+    try {
+      // Import download utility dynamically
+      const { DownloadManager } = await import('@/lib/downloadUtils')
+      const downloadManager = DownloadManager.getInstance()
+
+      // Check if download is supported
+      if (!downloadManager.isDownloadSupported()) {
+        throw new Error('Download not supported in this browser')
+      }
+
+      // Download the file
+      await downloadManager.downloadBase64Image(
+        convertedFileData,
+        convertedFileType,
+        convertedFile,
+        {
+          mimeType: `image/${convertedFileType === 'jpg' ? 'jpeg' : convertedFileType}`
+        }
+      )
+
+      toast({
+        title: "Download Started",
+        description: `${convertedFile} is being downloaded`,
+      })
+
+    } catch (error) {
+      console.error('Download failed:', error)
+      toast({
+        title: "Download Failed",
+        description: error instanceof Error ? error.message : "Failed to download file",
+        variant: "destructive"
+      })
+    }
   }
 
   const canConvert = selectedFile && detectedFormat && toFormat && detectedFormat !== toFormat
