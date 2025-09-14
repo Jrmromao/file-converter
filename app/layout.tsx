@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { Image, FileImage, Palette, Film } from "lucide-react"
 import type { ReactNode } from 'react'
-import AdSense from './components/AdSense'
+import SessionProviderWrapper from "./components/SessionProviderWrapper"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -105,11 +105,11 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="google-adsense-account" content="ca-pub-1009479093659621"></meta>
-        <AdSense pId="ca-pub-1009479093659621" />
       </head>
       <body className={inter.className}>
-        {children}
+        <SessionProviderWrapper>
+          {children}
+        </SessionProviderWrapper>
         <GoogleAnalytics gaId="G-313BF1QH73" />
         <Toaster />
       </body>

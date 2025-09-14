@@ -21,7 +21,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { GoogleAdClient } from "@/components/GoogleAdClient"
 import Head from 'next/head'
 import { motion } from "framer-motion"
 import { subscribeToUpdates } from './actions/subscribe'
