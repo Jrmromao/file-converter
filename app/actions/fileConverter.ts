@@ -189,6 +189,72 @@ export async function convertFile(formData: FormData): Promise<ConversionResult>
         }
       }
       
+      // Apply creative effects
+      const creativeEffect = formData.get('creativeEffect') as string
+      if (creativeEffect && creativeEffect !== 'none') {
+        try {
+          const effectConfig = JSON.parse(creativeEffect)
+          
+          // Apply blur if specified
+          if (effectConfig.blur) {
+            sharpInstance = sharpInstance.blur(effectConfig.blur)
+          }
+          
+          // Apply modulation
+          if (effectConfig.modulate) {
+            sharpInstance = sharpInstance.modulate(effectConfig.modulate)
+          }
+          
+          // Apply tint
+          if (effectConfig.tint) {
+            sharpInstance = sharpInstance.tint(effectConfig.tint)
+          }
+          
+          // Apply gamma correction
+          if (effectConfig.gamma) {
+            sharpInstance = sharpInstance.gamma(effectConfig.gamma)
+          }
+          
+          // Apply linear adjustment
+          if (effectConfig.linear) {
+            sharpInstance = sharpInstance.linear(effectConfig.linear.a, effectConfig.linear.b)
+          }
+          
+          // Apply sharpen
+          if (effectConfig.sharpen) {
+            sharpInstance = sharpInstance.sharpen(effectConfig.sharpen)
+          }
+        } catch (error) {
+          console.warn('Failed to apply creative effect:', error)
+        }
+      }
+      
+      // Apply border effects
+      const borderEffect = formData.get('borderEffect') as string
+      if (borderEffect) {
+        try {
+          const borderConfig = JSON.parse(borderEffect)
+          
+          if (borderConfig.type === 'solid' && borderConfig.width > 0) {
+            // Add solid border by extending canvas
+            const { width: imgWidth, height: imgHeight } = await sharpInstance.metadata()
+            if (imgWidth && imgHeight) {
+              const borderWidth = borderConfig.width
+              
+              sharpInstance = sharpInstance.extend({
+                top: borderWidth,
+                bottom: borderWidth,
+                left: borderWidth,
+                right: borderWidth,
+                background: borderConfig.color || '#ffffff'
+              })
+            }
+          }
+        } catch (error) {
+          console.warn('Failed to apply border effect:', error)
+        }
+      }
+      
       // Apply manual adjustments (override filter if specified)
       if (brightness !== undefined || contrast !== undefined || saturation !== undefined) {
         const modulateOptions: any = {}
