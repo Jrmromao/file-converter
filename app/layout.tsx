@@ -5,7 +5,6 @@ import { Toaster } from '@/components/ui/toaster'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { Image, FileImage, Palette, Film } from "lucide-react"
 import type { ReactNode } from 'react'
-import SessionProviderWrapper from "./components/SessionProviderWrapper"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -107,9 +106,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={inter.className}>
-        <SessionProviderWrapper>
-          {children}
-        </SessionProviderWrapper>
+        {children}
         <GoogleAnalytics gaId="G-313BF1QH73" />
         <Toaster />
       </body>
